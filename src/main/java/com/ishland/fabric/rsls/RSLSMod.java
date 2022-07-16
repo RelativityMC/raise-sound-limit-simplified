@@ -42,6 +42,5 @@ public class RSLSMod implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-
     }
 }

@@ -18,5 +18,6 @@
     "MixinSoundManager",
     "MixinSoundSystem",
     "access.ISoundSystem"
-  ]
+  ],
+  "plugin": "com.ishland.fabric.rsls.mixin.RSLSMixinPlugin"
 }
