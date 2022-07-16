@@ -1,38 +1,32 @@
 {
   "schemaVersion": 1,
-  "id": "modid",
+  "id": "rsls",
   "version": "${version}",
 
-  "name": "Example Mod",
-  "description": "This is an example description! Tell everyone what your mod is about!",
+  "name": "Raise Sound Limit Simplified",
+  "description": "A mod that raises Minecraft sound sources limit in a simple way ",
   "authors": [
-    "Me!"
+    "ishland"
   ],
   "contact": {
-    "homepage": "https://fabricmc.net/",
-    "sources": "https://github.com/FabricMC/fabric-example-mod"
+    "sources": "https://github.com/ishland/raise-sound-limit-simplified",
+    "issues": "https://github.com/ishland/raise-sound-limit-simplified/issues"
   },
 
-  "license": "CC0-1.0",
-  "icon": "assets/modid/icon.png",
+  "license": "MIT",
 
-  "environment": "*",
+  "environment": "client",
   "entrypoints": {
-    "main": [
-      "net.fabricmc.example.ExampleMod"
+    "client": [
+      "com.ishland.fabric.rsls.RSLSMod"
     ]
   },
   "mixins": [
-    "modid.mixins.json"
+    "rsls.mixins.json"
   ],
 
   "depends": {
     "fabricloader": ">=0.14.6",
-    "fabric": "*",
-    "minecraft": "~1.19",
     "java": ">=17"
-  },
-  "suggests": {
-    "another-mod": "*"
   }
 }
