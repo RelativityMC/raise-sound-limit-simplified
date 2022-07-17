@@ -41,7 +41,11 @@ dependencies {
 test {
 	useJUnitPlatform()
 	environment "ALSOFT_LOGLEVEL", "3"
-	testLogging.showStandardStreams = true
+	workingDir project.buildDir
+	testLogging {
+		showStandardStreams = true
+		exceptionFormat = 'full'
+	}
 }
 
 loom {
