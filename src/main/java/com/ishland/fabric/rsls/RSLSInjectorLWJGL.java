@@ -15,10 +15,10 @@ import java.nio.file.StandardCopyOption;
 
 public class RSLSInjectorLWJGL {
 
+    private static final String libName;
     private static final ByteBuffer buf;
 
     static {
-        String libName;
         if (PlatformDependent.isWindows()) {
             libName = "msvcrt.dll";
         } else if (PlatformDependent.isOsx()) {
@@ -39,10 +39,10 @@ public class RSLSInjectorLWJGL {
                     buf = MemoryUtil.memASCII(envDefinition);
                     final long address = MemoryUtil.memAddress(buf);
 
-                    try (SharedLibrary libc = APIUtil.apiCreateLibrary(libName)) {
-                        final long putenv = APIUtil.apiGetFunctionAddress(libc, "putenv");
-                        JNI.invokePP(address, putenv);
-                    }
+                    SharedLibrary libc = APIUtil.apiCreateLibrary(libName);
+                    final long putenv = APIUtil.apiGetFunctionAddress(libc, "putenv");
+                    final int result = JNI.invokePI(address, putenv);
+                    if (result != 0) throw new RuntimeException("Error %d when setting env".formatted(result));
                 } finally {
                     resource.close();
                 }
@@ -55,6 +55,16 @@ public class RSLSInjectorLWJGL {
     }
 
     public static void init() {
+    }
+
+    public static String getEnv() {
+        SharedLibrary libc = APIUtil.apiCreateLibrary(libName);
+        final long putenv = APIUtil.apiGetFunctionAddress(libc, "getenv");
+        ByteBuffer buf = MemoryUtil.memASCII("ALSOFT_CONF");
+        final long resultPointer = JNI.invokePP(MemoryUtil.memAddress(buf), putenv);
+        String result = MemoryUtil.memASCIISafe(resultPointer);
+        MemoryUtil.memFree(buf);
+        return result;
     }
 
 }

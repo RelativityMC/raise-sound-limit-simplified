@@ -13,11 +13,6 @@ import java.nio.IntBuffer;
 public class TestInjector {
 
     @Test
-    public void testInjector() {
-        RSLSInjectorLWJGL.init();
-    }
-
-    @Test
     @EnabledIf("hasDevice")
     public void testInjectedResult() {
         RSLSInjectorLWJGL.init();
@@ -41,6 +36,7 @@ public class TestInjector {
 
 
     public boolean hasDevice() {
+        RSLSInjectorLWJGL.init();
         final long device = ALC10.alcOpenDevice((String) null);
         final int error = ALC10.alcGetError(device);
         if (error != 0) return false;

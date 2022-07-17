@@ -12,6 +12,8 @@ version = project.mod_version
 group = project.maven_group
 
 repositories {
+	mavenCentral()
+
 	// Add repositories to retrieve artifacts from in here.
 	// You should only use this when depending on other mods because
 	// Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
@@ -33,11 +35,13 @@ dependencies {
 
 	// modImplementation "net.fabricmc.fabric-api:fabric-api-deprecated:${project.fabric_version}"
 
-	testImplementation 'org.junit.jupiter:junit-jupiter:5.7.1'
+	testImplementation 'org.junit.jupiter:junit-jupiter:5.8.2'
 }
 
 test {
 	useJUnitPlatform()
+	environment "ALSOFT_LOGLEVEL", "3"
+	testLogging.showStandardStreams = true
 }
 
 loom {
