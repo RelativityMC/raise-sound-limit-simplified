@@ -68,8 +68,11 @@ jar {
 
 model {
 	platforms {
-		x64 {
-			architecture "x64"
+		x86_64 {
+			architecture "x86_64"
+		}
+		aarch64 {
+			architecture "aarch64"
 		}
 	}
 
@@ -79,8 +82,8 @@ model {
 				if (targetPlatform.operatingSystem.macOsX) {
 					cCompiler.args '-I', "${org.gradle.internal.jvm.Jvm.current().javaHome}/include"
 					cCompiler.args '-I', "${org.gradle.internal.jvm.Jvm.current().javaHome}/include/darwin"
-					cCompiler.args '-mmacosx-version-min=10.4'
-					linker.args '-mmacosx-version-min=10.4'
+					cCompiler.args '-mmacosx-version-min=10.9'
+					linker.args '-mmacosx-version-min=10.9'
 				} else if (targetPlatform.operatingSystem.linux) {
 					cCompiler.args '-I', "${org.gradle.internal.jvm.Jvm.current().javaHome}/include"
 					cCompiler.args '-I', "${org.gradle.internal.jvm.Jvm.current().javaHome}/include/linux"
