@@ -40,7 +40,7 @@ public class RSLSInjectorLWJGL {
                     final long address = MemoryUtil.memAddress(buf);
 
                     SharedLibrary libc = APIUtil.apiCreateLibrary(libName);
-                    final long putenv = APIUtil.apiGetFunctionAddress(libc, "putenv");
+                    final long putenv = APIUtil.apiGetFunctionAddress(libc, PlatformDependent.isWindows() ? "_putenv" : "putenv");
                     final int result = JNI.invokePI(address, putenv);
                     if (result != 0) throw new RuntimeException("Error %d when setting env".formatted(result));
                 } finally {
@@ -55,16 +55,6 @@ public class RSLSInjectorLWJGL {
     }
 
     public static void init() {
-    }
-
-    public static String getEnv() {
-        SharedLibrary libc = APIUtil.apiCreateLibrary(libName);
-        final long putenv = APIUtil.apiGetFunctionAddress(libc, "getenv");
-        ByteBuffer buf = MemoryUtil.memASCII("ALSOFT_CONF");
-        final long resultPointer = JNI.invokePP(MemoryUtil.memAddress(buf), putenv);
-        String result = MemoryUtil.memASCIISafe(resultPointer);
-        MemoryUtil.memFree(buf);
-        return result;
     }
 
 }
