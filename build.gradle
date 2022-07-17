@@ -2,7 +2,6 @@ plugins {
 	id 'fabric-loom' version '0.12-SNAPSHOT'
 	id 'maven-publish'
 	id 'io.github.juuxel.loom-quiltflower' version '1.+'
-	id 'c'
 }
 
 sourceCompatibility = JavaVersion.VERSION_17
@@ -33,6 +32,12 @@ dependencies {
 	// These are included in the Fabric API production distribution and allow you to update your mod to the latest modules at a later more convenient time.
 
 	// modImplementation "net.fabricmc.fabric-api:fabric-api-deprecated:${project.fabric_version}"
+
+	testImplementation 'org.junit.jupiter:junit-jupiter:5.7.1'
+}
+
+test {
+	useJUnitPlatform()
 }
 
 loom {
@@ -63,67 +68,6 @@ jar {
 	from("LICENSE") {
 		rename { "${it}_${project.archivesBaseName}"}
 	}
-}
-
-
-model {
-	platforms {
-		x86_64 {
-			architecture "x86_64"
-		}
-		aarch64 {
-			architecture "aarch64"
-		}
-	}
-
-	components {
-		natives(NativeLibrarySpec) {
-			binaries.all {
-				if (targetPlatform.operatingSystem.macOsX) {
-					cCompiler.args '-I', "${org.gradle.internal.jvm.Jvm.current().javaHome}/include"
-					cCompiler.args '-I', "${org.gradle.internal.jvm.Jvm.current().javaHome}/include/darwin"
-					cCompiler.args '-mmacosx-version-min=10.9'
-					linker.args '-mmacosx-version-min=10.9'
-				} else if (targetPlatform.operatingSystem.linux) {
-					cCompiler.args '-I', "${org.gradle.internal.jvm.Jvm.current().javaHome}/include"
-					cCompiler.args '-I', "${org.gradle.internal.jvm.Jvm.current().javaHome}/include/linux"
-					cCompiler.args '-D_FILE_OFFSET_BITS=64'
-				} else if (targetPlatform.operatingSystem.windows) {
-					cCompiler.args "-I${org.gradle.internal.jvm.Jvm.current().javaHome}/include"
-					cCompiler.args "-I${org.gradle.internal.jvm.Jvm.current().javaHome}/include/win32"
-					linker.args "Shlwapi.lib", "Advapi32.lib"
-				} else if (targetPlatform.operatingSystem.freeBSD) {
-					cCompiler.args '-I', "${org.gradle.internal.jvm.Jvm.current().javaHome}/include"
-					cCompiler.args '-I', "${org.gradle.internal.jvm.Jvm.current().javaHome}/include/freebsd"
-				}
-			}
-		}
-	}
-}
-
-processResources {
-	with copySpec {
-		from(buildDir.toPath().resolve("libs").resolve("natives").resolve("shared")) {
-			include '/*.so'
-		}
-		rename { "librsls-natives.so" }
-	}
-
-	with copySpec {
-		from(buildDir.toPath().resolve("libs").resolve("natives").resolve("shared")) {
-			include '/*.dll'
-		}
-		rename { "rsls-natives.dll" }
-	}
-
-	with copySpec {
-		from(buildDir.toPath().resolve("libs").resolve("natives").resolve("shared")) {
-			include '/*.dylib'
-		}
-		rename { "rsls-natives.dylib" }
-	}
-
-	dependsOn "nativesSharedLibrary"
 }
 
 // configure the maven publication

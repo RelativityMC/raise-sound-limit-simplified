@@ -4,14 +4,11 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.ishland.fabric.rsls.mixin.access.ISoundManager;
 import com.ishland.fabric.rsls.mixin.access.ISoundSystem;
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.api.ModInitializer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.sound.Channel;
 import net.minecraft.client.sound.SoundManager;
 import net.minecraft.client.sound.SoundSystem;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -42,5 +39,6 @@ public class RSLSMod implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
+        RSLSInjectorLWJGL.init();
     }
 }

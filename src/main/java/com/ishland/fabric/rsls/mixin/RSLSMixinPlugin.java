@@ -1,6 +1,5 @@
 package com.ishland.fabric.rsls.mixin;
 
-import com.ishland.fabric.rsls.RLSLNativeInterface;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
@@ -11,7 +10,6 @@ import java.util.Set;
 public class RSLSMixinPlugin implements IMixinConfigPlugin {
     @Override
     public void onLoad(String mixinPackage) {
-        RLSLNativeInterface.inject();
     }
 
     @Override

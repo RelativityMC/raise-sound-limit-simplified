@@ -2,7 +2,6 @@ package com.ishland.fabric.rsls.mixin;
 
 import com.ishland.fabric.rsls.mixin.access.ISoundExecutor;
 import com.ishland.fabric.rsls.mixin.access.ISoundSystem;
-import net.minecraft.client.sound.Channel;
 import net.minecraft.client.sound.SoundExecutor;
 import net.minecraft.client.sound.SoundInstance;
 import net.minecraft.client.sound.SoundInstanceListener;
@@ -70,7 +69,7 @@ public abstract class MixinSoundManager {
 
     @Inject(method = "apply(Lnet/minecraft/client/sound/SoundManager$SoundList;Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/util/profiler/Profiler;)V", at = @At("HEAD"), cancellable = true)
     private void onApply(SoundManager.SoundList soundList, ResourceManager resourceManager, Profiler profiler, CallbackInfo ci) {
-        if (rlsl$shouldRunOffthread()) {
+        if (rsls$shouldRunOffthread()) {
             ci.cancel();
             ((ISoundSystem) this.soundSystem).getTaskQueue().execute(() -> apply(soundList, resourceManager, profiler));
         }
@@ -78,7 +77,7 @@ public abstract class MixinSoundManager {
 
     @Inject(method = "playNextTick", at = @At("HEAD"), cancellable = true)
     private void onPlayNextTick(TickableSoundInstance sound, CallbackInfo ci) {
-        if (rlsl$shouldRunOffthread()) {
+        if (rsls$shouldRunOffthread()) {
             ci.cancel();
             ((ISoundSystem) this.soundSystem).getTaskQueue().execute(() -> playNextTick(sound));
         }
@@ -86,7 +85,7 @@ public abstract class MixinSoundManager {
 
     @Inject(method = "play(Lnet/minecraft/client/sound/SoundInstance;)V", at = @At("HEAD"), cancellable = true)
     private void onPlay(SoundInstance sound, CallbackInfo ci) {
-        if (rlsl$shouldRunOffthread()) {
+        if (rsls$shouldRunOffthread()) {
             ci.cancel();
             ((ISoundSystem) this.soundSystem).getTaskQueue().execute(() -> play(sound));
         }
@@ -94,7 +93,7 @@ public abstract class MixinSoundManager {
 
     @Inject(method = "play(Lnet/minecraft/client/sound/SoundInstance;I)V", at = @At("HEAD"), cancellable = true)
     private void onPlay(SoundInstance sound, int delay, CallbackInfo ci) {
-        if (rlsl$shouldRunOffthread()) {
+        if (rsls$shouldRunOffthread()) {
             ci.cancel();
             ((ISoundSystem) this.soundSystem).getTaskQueue().execute(() -> play(sound, delay));
         }
@@ -104,7 +103,7 @@ public abstract class MixinSoundManager {
 
     @Inject(method = "pauseAll", at = @At("HEAD"), cancellable = true)
     private void onPauseAll(CallbackInfo ci) {
-        if (rlsl$shouldRunOffthread()) {
+        if (rsls$shouldRunOffthread()) {
             ci.cancel();
             ((ISoundSystem) this.soundSystem).getTaskQueue().execute(this::pauseAll);
         }
@@ -112,7 +111,7 @@ public abstract class MixinSoundManager {
 
     @Inject(method = "stopAll", at = @At("HEAD"), cancellable = true)
     private void onStopAll(CallbackInfo ci) {
-        if (rlsl$shouldRunOffthread()) {
+        if (rsls$shouldRunOffthread()) {
             ci.cancel();
             ((ISoundSystem) this.soundSystem).getTaskQueue().execute(this::stopAll);
         }
@@ -120,7 +119,7 @@ public abstract class MixinSoundManager {
 
     @Inject(method = "close", at = @At("HEAD"), cancellable = true)
     private void onClose(CallbackInfo ci) {
-        if (rlsl$shouldRunOffthread()) {
+        if (rsls$shouldRunOffthread()) {
             ci.cancel();
             ((ISoundSystem) this.soundSystem).getTaskQueue().execute(this::close);
         }
@@ -128,7 +127,7 @@ public abstract class MixinSoundManager {
 
     @Inject(method = "tick", at = @At("HEAD"), cancellable = true)
     private void onTick(boolean paused, CallbackInfo ci) {
-        if (rlsl$shouldRunOffthread()) {
+        if (rsls$shouldRunOffthread()) {
             ci.cancel();
             ((ISoundSystem) this.soundSystem).getTaskQueue().execute(() -> this.tick(paused));
         }
@@ -136,7 +135,7 @@ public abstract class MixinSoundManager {
 
     @Inject(method = "resumeAll", at = @At("HEAD"), cancellable = true)
     private void onResumeAll(CallbackInfo ci) {
-        if (rlsl$shouldRunOffthread()) {
+        if (rsls$shouldRunOffthread()) {
             ci.cancel();
             ((ISoundSystem) this.soundSystem).getTaskQueue().execute(this::resumeAll);
         }
@@ -144,7 +143,7 @@ public abstract class MixinSoundManager {
 
     @Inject(method = "updateSoundVolume", at = @At("HEAD"), cancellable = true)
     private void onUpdateSoundVolume(SoundCategory category, float volume, CallbackInfo ci) {
-        if (rlsl$shouldRunOffthread()) {
+        if (rsls$shouldRunOffthread()) {
             ci.cancel();
             ((ISoundSystem) this.soundSystem).getTaskQueue().execute(() -> this.updateSoundVolume(category, volume));
         }
@@ -154,7 +153,7 @@ public abstract class MixinSoundManager {
 
     @Inject(method = "registerListener", at = @At("HEAD"), cancellable = true)
     private void onRegisterListener(SoundInstanceListener listener, CallbackInfo ci) {
-        if (rlsl$shouldRunOffthread()) {
+        if (rsls$shouldRunOffthread()) {
             ci.cancel();
             ((ISoundSystem) this.soundSystem).getTaskQueue().execute(() -> this.registerListener(listener));
         }
@@ -162,7 +161,7 @@ public abstract class MixinSoundManager {
 
     @Inject(method = "unregisterListener", at = @At("HEAD"), cancellable = true)
     private void onUnregisterListener(SoundInstanceListener listener, CallbackInfo ci) {
-        if (rlsl$shouldRunOffthread()) {
+        if (rsls$shouldRunOffthread()) {
             ci.cancel();
             ((ISoundSystem) this.soundSystem).getTaskQueue().execute(() -> this.unregisterListener(listener));
         }
@@ -170,7 +169,7 @@ public abstract class MixinSoundManager {
 
     @Inject(method = "stopSounds", at = @At("HEAD"), cancellable = true)
     private void onStopSounds(Identifier id, SoundCategory soundCategory, CallbackInfo ci) {
-        if (rlsl$shouldRunOffthread()) {
+        if (rsls$shouldRunOffthread()) {
             ci.cancel();
             ((ISoundSystem) this.soundSystem).getTaskQueue().execute(() -> this.stopSounds(id, soundCategory));
         }
@@ -178,14 +177,14 @@ public abstract class MixinSoundManager {
 
     @Inject(method = "reloadSounds", at = @At("HEAD"), cancellable = true)
     private void onReloadSounds(CallbackInfo ci) {
-        if (rlsl$shouldRunOffthread()) {
+        if (rsls$shouldRunOffthread()) {
             ci.cancel();
             ((ISoundSystem) this.soundSystem).getTaskQueue().execute(this::reloadSounds);
         }
     }
 
     @Unique
-    private boolean rlsl$shouldRunOffthread() {
+    private boolean rsls$shouldRunOffthread() {
         final SoundExecutor executor = ((ISoundSystem) this.soundSystem).getTaskQueue();
         final Thread thread = ((ISoundExecutor) executor).getThread();
         return Thread.currentThread() != thread;
