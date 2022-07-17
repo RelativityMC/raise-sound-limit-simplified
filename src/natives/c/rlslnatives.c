@@ -10,5 +10,5 @@ JNIEXPORT void JNICALL Java_com_ishland_fabric_rsls_RLSLNativeInterface_injectEn
     char *result = malloc(strlen(pathPointer) + strlen(prefix) + 5);
     memcpy(result, prefix, strlen(prefix) + 1);
     strcat(result, pathPointer);
-    pputenv(result);
+    putenv(result);
 }
