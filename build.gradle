@@ -78,6 +78,12 @@ jar {
 	}
 }
 
+afterEvaluate {
+	migrateMappings.configure {
+		outputDir = project.file("src/main/java")
+	}
+}
+
 // configure the maven publication
 publishing {
 	publications {
