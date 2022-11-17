@@ -1,5 +1,6 @@
 package com.ishland.fabric.rsls.mixin;
 
+import com.ishland.fabric.rsls.common.HashSetList;
 import net.minecraft.client.sound.Channel;
 import net.minecraft.client.sound.SoundInstance;
 import net.minecraft.client.sound.SoundSystem;
@@ -33,10 +34,14 @@ public abstract class MixinSoundSystem {
 
     @Shadow public abstract void play(SoundInstance sound);
 
+    @Mutable
+    @Shadow @Final private List<TickableSoundInstance> tickingSounds;
+
     @Inject(method = "<init>", at = @At("RETURN"))
     private void onInit(CallbackInfo ci) {
         this.soundEndTicks = Collections.synchronizedMap(this.soundEndTicks);
         this.sources = Collections.synchronizedMap(this.sources);
+        this.tickingSounds = new HashSetList<>(this.tickingSounds);
     }
 
     @Redirect(method = "tick(Z)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/sound/Channel;tick()V"))
