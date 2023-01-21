@@ -67,14 +67,6 @@ public abstract class MixinSoundManager {
         this.sounds = Collections.synchronizedMap(this.sounds);
     }
 
-    @Inject(method = "apply(Lnet/minecraft/client/sound/SoundManager$SoundList;Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/util/profiler/Profiler;)V", at = @At("HEAD"), cancellable = true)
-    private void onApply(SoundManager.SoundList soundList, ResourceManager resourceManager, Profiler profiler, CallbackInfo ci) {
-        if (rsls$shouldRunOffthread()) {
-            ci.cancel();
-            ((ISoundSystem) this.soundSystem).getTaskQueue().execute(() -> apply(soundList, resourceManager, profiler));
-        }
-    }
-
     @Inject(method = "playNextTick", at = @At("HEAD"), cancellable = true)
     private void onPlayNextTick(TickableSoundInstance sound, CallbackInfo ci) {
         if (rsls$shouldRunOffthread()) {
@@ -172,14 +164,6 @@ public abstract class MixinSoundManager {
         if (rsls$shouldRunOffthread()) {
             ci.cancel();
             ((ISoundSystem) this.soundSystem).getTaskQueue().execute(() -> this.stopSounds(id, soundCategory));
-        }
-    }
-
-    @Inject(method = "reloadSounds", at = @At("HEAD"), cancellable = true)
-    private void onReloadSounds(CallbackInfo ci) {
-        if (rsls$shouldRunOffthread()) {
-            ci.cancel();
-            ((ISoundSystem) this.soundSystem).getTaskQueue().execute(this::reloadSounds);
         }
     }
 
