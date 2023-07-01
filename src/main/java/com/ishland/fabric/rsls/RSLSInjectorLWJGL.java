@@ -46,7 +46,7 @@ public class RSLSInjectorLWJGL {
                         }
                     }));
                     String envDefinition = "ALSOFT_CONF=" + current.relativize(tempFile);
-                    System.out.println(String.format("Attempting to invoke putenv(%s)", envDefinition));
+                    System.out.println(String.format("Attempting to invoke putenv(\"%s\")", envDefinition));
                     buf = MemoryUtil.memASCII(envDefinition);
                     final long address = MemoryUtil.memAddress(buf);
 
