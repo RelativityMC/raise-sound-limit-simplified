@@ -8,6 +8,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.text.Text;
+import net.minecraft.util.math.MathHelper;
 import org.apache.logging.log4j.LogManager;
 
 import java.io.IOException;
@@ -56,8 +57,8 @@ public class RSLSConfig {
                 throw new RuntimeException(e);
             }
         }
-        maxSourcesCount = getInt(properties, "maxSourcesCount", probedMaxSourcesCount);
-        maxStreamingSources = getInt(properties, "maxStreamingSources", 8);
+        maxSourcesCount = MathHelper.clamp(getInt(properties, "maxSourcesCount", probedMaxSourcesCount), 32, probedMaxSourcesCount);
+        maxStreamingSources = MathHelper.clamp(getInt(properties, "maxStreamingSources", 8), 8, probedMaxSourcesCount);
         saveConfig();
     }
 
