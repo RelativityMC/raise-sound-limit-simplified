@@ -1,5 +1,6 @@
 package com.ishland.fabric.rsls.mixin;
 
+import com.ishland.fabric.rsls.common.SoundSystemDuck;
 import com.ishland.fabric.rsls.mixin.access.ISoundExecutor;
 import com.ishland.fabric.rsls.mixin.access.ISoundSystem;
 import net.minecraft.client.sound.SoundExecutor;
@@ -62,7 +63,7 @@ public abstract class MixinSoundManager {
 
     @Shadow public abstract void reloadSounds();
 
-    @Inject(method = "<init>", at = @At("RETURN"))
+    @Inject(method = "<init>", at = @At("RETURN"), remap = false)
     private void onInit(CallbackInfo ci) {
         this.sounds = Collections.synchronizedMap(this.sounds);
     }
@@ -79,7 +80,8 @@ public abstract class MixinSoundManager {
     private void onPlay(SoundInstance sound, CallbackInfo ci) {
         if (rsls$shouldRunOffthread()) {
             ci.cancel();
-            ((ISoundSystem) this.soundSystem).getTaskQueue().execute(() -> play(sound));
+//            ((ISoundSystem) this.soundSystem).getTaskQueue().execute(() -> play(sound));
+            ((SoundSystemDuck) this.soundSystem).rsls$schedulePlay(sound);
         }
     }
 

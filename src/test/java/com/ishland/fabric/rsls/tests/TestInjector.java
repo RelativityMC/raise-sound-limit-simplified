@@ -31,7 +31,7 @@ public class TestInjector {
         }
         ALC10.alcDestroyContext(context);
         ALC10.alcCloseDevice(device);
-        Assertions.assertEquals(2047, sourcesCount);
+        Assertions.assertEquals(4095, sourcesCount);
     }
 
 

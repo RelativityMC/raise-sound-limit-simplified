@@ -1,7 +1,11 @@
 package com.ishland.fabric.rsls.mixin;
 
 import com.ishland.fabric.rsls.common.HashSetList;
+import com.ishland.fabric.rsls.common.SoundSystemDuck;
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import net.minecraft.client.sound.Channel;
+import net.minecraft.client.sound.SoundExecutor;
 import net.minecraft.client.sound.SoundInstance;
 import net.minecraft.client.sound.SoundSystem;
 import net.minecraft.client.sound.TickableSoundInstance;
@@ -9,6 +13,7 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -17,12 +22,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 @Mixin(SoundSystem.class)
-public abstract class MixinSoundSystem {
+public abstract class MixinSoundSystem implements SoundSystemDuck {
 
     @Mutable
     @Shadow @Final private Map<SoundInstance, Integer> soundEndTicks;
@@ -37,7 +43,16 @@ public abstract class MixinSoundSystem {
     @Mutable
     @Shadow @Final private List<TickableSoundInstance> tickingSounds;
 
-    @Inject(method = "<init>", at = @At("RETURN"))
+    @Shadow public abstract void play(SoundInstance sound, int delay);
+
+    @Shadow @Final private SoundExecutor taskQueue;
+
+    @Shadow private boolean started;
+
+    @Unique
+    private final AtomicLong rsls$droppedSounds = new AtomicLong();
+
+    @Inject(method = "<init>", at = @At("RETURN"), remap = false)
     private void onInit(CallbackInfo ci) {
         this.soundEndTicks = Collections.synchronizedMap(this.soundEndTicks);
         this.sources = Collections.synchronizedMap(this.sources);
@@ -53,12 +68,55 @@ public abstract class MixinSoundSystem {
     private Stream<?> optimizeNextTickIteration(List<?> instance) {
         if (instance == this.soundsToPlayNextTick) {
             for (TickableSoundInstance soundInstance : this.soundsToPlayNextTick) {
-                this.play(soundInstance); // canPlay check done in play()
+                this.rsls$schedulePlay(soundInstance); // canPlay check done in play()
             }
 
             return null;
         }
         return instance.stream();
+    }
+
+    @Override
+    public void rsls$schedulePlay(SoundInstance instance) {
+        long scheduleTime = System.nanoTime();
+        this.taskQueue.send(() -> {
+            if (!this.started) {
+                return;
+            }
+            if (System.nanoTime() - scheduleTime < 1_000_000_000L) { // 1 second
+                this.play(instance);
+            } else {
+                this.rsls$droppedSounds.incrementAndGet();
+            }
+        });
+    }
+
+    @Inject(method = "reloadSounds", at = @At("RETURN"))
+    private void onReload(CallbackInfo ci) {
+        this.rsls$droppedSounds.set(0);
+    }
+
+    @ModifyReturnValue(method = "getDebugString", at = @At("RETURN"))
+    private String appendDebugString(String original) {
+        final long dropped = this.rsls$droppedSounds.get();
+        if (dropped != 0) {
+            return original + String.format(" (%d dropped)", dropped);
+        } else {
+            return original;
+        }
+    }
+
+    @Redirect(method = "tick()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/sound/SoundSystem;play(Lnet/minecraft/client/sound/SoundInstance;)V"))
+    private void redirectDelayedPlay(SoundSystem instance, SoundInstance sound) {
+        this.rsls$schedulePlay(sound);
+    }
+
+    @ModifyExpressionValue(method = "play(Lnet/minecraft/client/sound/SoundInstance;)V", at = @At(value = "INVOKE", target = "Ljava/util/concurrent/CompletableFuture;join()Ljava/lang/Object;"))
+    private Object monitorSkippedSounds(Object obj) {
+        if (obj == null) {
+            this.rsls$droppedSounds.incrementAndGet();
+        }
+        return obj;
     }
 
     @Redirect(method = "tick()V", at = @At(value = "INVOKE", target = "Ljava/util/stream/Stream;filter(Ljava/util/function/Predicate;)Ljava/util/stream/Stream;"))
