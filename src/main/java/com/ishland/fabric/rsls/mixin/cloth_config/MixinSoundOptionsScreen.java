@@ -1,6 +1,7 @@
 package com.ishland.fabric.rsls.mixin.cloth_config;
 
 import com.ishland.fabric.rsls.common.RSLSConfig;
+import com.ishland.fabric.rsls.common.cloth_config.ConfigScreenUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.option.GameOptionsScreen;
@@ -26,7 +27,7 @@ public abstract class MixinSoundOptionsScreen extends GameOptionsScreen {
 
     @Inject(method = "init", at = @At("RETURN"))
     private void onInit(CallbackInfo ci) {
-        final ButtonWidget widget = RSLSConfig.getConfigButton(this);
+        final ButtonWidget widget = ConfigScreenUtils.getConfigButton(this);
         if (widget != null)
             this.addDrawableChild(widget);
     }
