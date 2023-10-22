@@ -1,6 +1,6 @@
 package com.ishland.fabric.rsls.mixin;
 
-import com.ishland.fabric.rsls.common.RSLSOptions;
+import com.ishland.fabric.rsls.common.RSLSConfig;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Share;
@@ -20,26 +20,28 @@ public class MixinSoundEngine {
     @Dynamic
     @WrapOperation(method = {"init", "method_19661"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/client/sound/SoundEngine;getMonoSourceCount()I"))
     private int modifyMaxSourceFromConfig(SoundEngine instance, Operation<Integer> operation, @Share("rsls$actualSourcesCount") LocalIntRef actualSourcesCount) {
-        final int min = Math.min(operation.call(instance), RSLSOptions.maxSourcesCount.getValue());
+        final int min = Math.min(operation.call(instance), RSLSConfig.maxSourcesCount);
         actualSourcesCount.set(min);
         return min;
     }
 
+    @Dynamic
     @ModifyArg(
-            method = "init",
+            method = {"init", "method_19661"},
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/sound/SoundEngine$SourceSetImpl;<init>(I)V", ordinal = 0),
             slice = @Slice(
                     from = @At(value = "INVOKE", target = "Lnet/minecraft/client/sound/SoundEngine;getMonoSourceCount()I")
             )
     )
     private int modifyStaticSources(int maxSourceCount, @Share("rsls$actualSourcesCount") LocalIntRef actualSourcesCount, @Share("rsls$actualStaticSourcesCount") LocalIntRef actualStaticSourcesCount) {
-        final int min = actualSourcesCount.get() - RSLSOptions.maxStreamingSources.getValue();
+        final int min = actualSourcesCount.get() - RSLSConfig.maxStreamingSources;
         actualStaticSourcesCount.set(min);
         return min;
     }
 
+    @Dynamic
     @ModifyArg(
-            method = "init",
+            method = {"init", "method_19661"},
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/sound/SoundEngine$SourceSetImpl;<init>(I)V", ordinal = 1),
             slice = @Slice(
                     from = @At(value = "INVOKE", target = "Lnet/minecraft/client/sound/SoundEngine;getMonoSourceCount()I")

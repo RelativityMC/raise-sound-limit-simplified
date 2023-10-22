@@ -14,10 +14,9 @@
   },
   "client": [
     "MixinClientPlayNetworkHandler",
-    "MixinGameOptions",
     "MixinSoundExecutor",
     "MixinSoundManager",
-    "MixinSoundOptionsScreen",
+    "cloth_config.MixinSoundOptionsScreen",
     "MixinSoundSystem",
     "access.ISoundSystem"
   ],

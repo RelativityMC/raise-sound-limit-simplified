@@ -1,6 +1,7 @@
 package com.ishland.fabric.rsls;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import com.ishland.fabric.rsls.common.RSLSConfig;
 import com.ishland.fabric.rsls.mixin.access.ISoundManager;
 import com.ishland.fabric.rsls.mixin.access.ISoundSystem;
 import net.fabricmc.api.ClientModInitializer;
@@ -41,6 +42,7 @@ public class RSLSMod implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
 //        MixinEnvironment.getCurrentEnvironment().audit();
+        RSLSConfig.init();
         RSLSInjectorLWJGL.init();
     }
 }
