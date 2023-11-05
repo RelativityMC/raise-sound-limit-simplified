@@ -50,7 +50,7 @@ public abstract class MixinSoundSystem implements SoundSystemDuck {
     @Shadow private boolean started;
 
     @Unique
-    private final AtomicLong rsls$droppedSounds = new AtomicLong();
+    private final AtomicLong rsls$droppedSoundsPerf = new AtomicLong();
 
     @Inject(method = "<init>", at = @At("RETURN"), remap = false)
     private void onInit(CallbackInfo ci) {
@@ -86,19 +86,19 @@ public abstract class MixinSoundSystem implements SoundSystemDuck {
             if (System.nanoTime() - scheduleTime < 1_000_000_000L) { // 1 second
                 this.play(instance);
             } else {
-                this.rsls$droppedSounds.incrementAndGet();
+                this.rsls$droppedSoundsPerf.incrementAndGet();
             }
         });
     }
 
     @Inject(method = "reloadSounds", at = @At("RETURN"))
     private void onReload(CallbackInfo ci) {
-        this.rsls$droppedSounds.set(0);
+        this.rsls$droppedSoundsPerf.set(0);
     }
 
     @ModifyReturnValue(method = "getDebugString", at = @At("RETURN"))
     private String appendDebugString(String original) {
-        final long dropped = this.rsls$droppedSounds.get();
+        final long dropped = this.rsls$droppedSoundsPerf.get();
         if (dropped != 0) {
             return original + String.format(" (%d dropped)", dropped);
         } else {
@@ -109,14 +109,6 @@ public abstract class MixinSoundSystem implements SoundSystemDuck {
     @Redirect(method = "tick()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/sound/SoundSystem;play(Lnet/minecraft/client/sound/SoundInstance;)V"))
     private void redirectDelayedPlay(SoundSystem instance, SoundInstance sound) {
         this.rsls$schedulePlay(sound);
-    }
-
-    @ModifyExpressionValue(method = "play(Lnet/minecraft/client/sound/SoundInstance;)V", at = @At(value = "INVOKE", target = "Ljava/util/concurrent/CompletableFuture;join()Ljava/lang/Object;"))
-    private Object monitorSkippedSounds(Object obj) {
-        if (obj == null) {
-            this.rsls$droppedSounds.incrementAndGet();
-        }
-        return obj;
     }
 
     @Redirect(method = "tick()V", at = @At(value = "INVOKE", target = "Ljava/util/stream/Stream;filter(Ljava/util/function/Predicate;)Ljava/util/stream/Stream;"))
