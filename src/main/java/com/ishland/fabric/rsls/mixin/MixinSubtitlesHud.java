@@ -16,13 +16,13 @@ public abstract class MixinSubtitlesHud {
 
     @Shadow @Final private MinecraftClient client;
 
-    @Shadow public abstract void onSoundPlayed(SoundInstance sound, WeightedSoundSet soundSet);
+    @Shadow public abstract void onSoundPlayed(SoundInstance sound, WeightedSoundSet soundSet, float range);
 
     @Inject(method = "onSoundPlayed", at = @At("HEAD"), cancellable = true)
-    private void onSoundPlayedHandler(SoundInstance sound, WeightedSoundSet soundSet, CallbackInfo ci) {
+    private void onSoundPlayedHandler(SoundInstance sound, WeightedSoundSet soundSet, float range, CallbackInfo ci) {
         if (!this.client.isOnThread()) {
             ci.cancel();
-            this.client.execute(() -> this.onSoundPlayed(sound, soundSet));
+            this.client.execute(() -> this.onSoundPlayed(sound, soundSet, range));
         }
     }
 

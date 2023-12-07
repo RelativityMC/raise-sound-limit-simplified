@@ -2,7 +2,6 @@ package com.ishland.fabric.rsls.mixin;
 
 import com.ishland.fabric.rsls.common.HashSetList;
 import com.ishland.fabric.rsls.common.SoundSystemDuck;
-import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import net.minecraft.client.sound.Channel;
 import net.minecraft.client.sound.SoundExecutor;

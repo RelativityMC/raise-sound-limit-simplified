@@ -1,7 +1,6 @@
 package com.ishland.fabric.rsls;
 
 import io.netty.util.internal.PlatformDependent;
-import net.fabricmc.loader.api.FabricLoader;
 import org.lwjgl.system.APIUtil;
 import org.lwjgl.system.JNI;
 import org.lwjgl.system.MemoryUtil;
