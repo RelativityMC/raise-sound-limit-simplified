@@ -2,6 +2,8 @@ package com.ishland.fabric.rsls.mixin;
 
 import com.llamalad7.mixinextras.MixinExtrasBootstrap;
 import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.VersionParsingException;
+import net.fabricmc.loader.api.metadata.version.VersionPredicate;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
@@ -10,6 +12,19 @@ import java.util.List;
 import java.util.Set;
 
 public class RSLSMixinPlugin implements IMixinConfigPlugin {
+
+    private static final boolean PRE_1_20_3;
+    private static final boolean POST_1_20_3;
+
+    static {
+        try {
+            PRE_1_20_3 = VersionPredicate.parse("<=1.20.2").test(FabricLoader.getInstance().getModContainer("minecraft").get().getMetadata().getVersion());
+            POST_1_20_3 = VersionPredicate.parse(">1.20.2").test(FabricLoader.getInstance().getModContainer("minecraft").get().getMetadata().getVersion());
+        } catch (VersionParsingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Override
     public void onLoad(String mixinPackage) {
         MixinExtrasBootstrap.init();
@@ -24,6 +39,10 @@ public class RSLSMixinPlugin implements IMixinConfigPlugin {
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
         if (mixinClassName.startsWith("com.ishland.fabric.rsls.mixin.cloth_config."))
             return FabricLoader.getInstance().isModLoaded("cloth-config");
+        if (mixinClassName.equals("com.ishland.fabric.rsls.mixin.MixinSubtitlesHud_1_20_3"))
+            return POST_1_20_3;
+        if (mixinClassName.equals("com.ishland.fabric.rsls.mixin.MixinSubtitlesHud_1_20_2"))
+            return PRE_1_20_3;
         return true;
     }
 

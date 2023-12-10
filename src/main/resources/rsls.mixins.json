@@ -5,7 +5,7 @@
   "compatibilityLevel": "JAVA_17",
   "mixins": [
     "MixinSoundEngine",
-    "MixinSubtitlesHud",
+    "MixinSubtitlesHud_1_20_3",
     "access.ISoundExecutor",
     "access.ISoundManager"
   ],
@@ -16,9 +16,10 @@
     "MixinClientPlayNetworkHandler",
     "MixinSoundExecutor",
     "MixinSoundManager",
-    "cloth_config.MixinSoundOptionsScreen",
     "MixinSoundSystem",
-    "access.ISoundSystem"
+    "MixinSubtitlesHud_1_20_2",
+    "access.ISoundSystem",
+    "cloth_config.MixinSoundOptionsScreen"
   ],
   "plugin": "com.ishland.fabric.rsls.mixin.RSLSMixinPlugin"
 }
