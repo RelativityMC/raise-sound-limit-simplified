@@ -1,7 +1,6 @@
 package com.ishland.fabric.rsls.common;
 
 import com.google.common.collect.Iterators;
-import com.google.common.collect.Lists;
 import it.unimi.dsi.fastutil.objects.ObjectCollection;
 import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
 import org.jetbrains.annotations.NotNull;
