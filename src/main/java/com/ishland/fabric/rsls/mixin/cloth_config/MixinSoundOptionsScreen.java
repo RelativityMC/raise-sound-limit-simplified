@@ -7,6 +7,7 @@ import net.minecraft.client.gui.screen.option.SoundOptionsScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.option.GameOptions;
 import net.minecraft.text.Text;
+import org.spongepowered.asm.mixin.Dynamic;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -19,7 +20,8 @@ public abstract class MixinSoundOptionsScreen extends GameOptionsScreen {
         super(parent, gameOptions, title);
     }
 
-    @Inject(method = "init", at = @At("RETURN"))
+    @Dynamic
+    @Inject(method = {"method_25426()V", "addOptions"}, at = @At("RETURN"))
     private void onInit(CallbackInfo ci) {
         final ButtonWidget widget = ConfigScreenUtils.getConfigButton(this);
         if (widget != null)
