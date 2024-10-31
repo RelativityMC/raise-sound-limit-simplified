@@ -13,11 +13,13 @@ import java.util.Set;
 
 public class RSLSMixinPlugin implements IMixinConfigPlugin {
 
+    private static final boolean PRE_1_19;
     private static final boolean PRE_1_20_3;
     private static final boolean POST_1_20_3;
 
     static {
         try {
+            PRE_1_19 = VersionPredicate.parse("<1.19").test(FabricLoader.getInstance().getModContainer("minecraft").get().getMetadata().getVersion());
             PRE_1_20_3 = VersionPredicate.parse("<=1.20.2").test(FabricLoader.getInstance().getModContainer("minecraft").get().getMetadata().getVersion());
             POST_1_20_3 = VersionPredicate.parse(">1.20.2").test(FabricLoader.getInstance().getModContainer("minecraft").get().getMetadata().getVersion());
         } catch (VersionParsingException e) {
@@ -43,6 +45,8 @@ public class RSLSMixinPlugin implements IMixinConfigPlugin {
             return POST_1_20_3;
         if (mixinClassName.equals("com.ishland.fabric.rsls.mixin.MixinSubtitlesHud_1_20_2"))
             return PRE_1_20_3;
+        if (mixinClassName.equals("com.ishland.fabric.rsls.mixin.MixinBiomeEffectSoundPlayer"))
+            return !PRE_1_19;
         return true;
     }
 
