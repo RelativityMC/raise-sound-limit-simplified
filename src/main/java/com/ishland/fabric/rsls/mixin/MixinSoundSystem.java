@@ -78,7 +78,7 @@ public abstract class MixinSoundSystem implements SoundSystemDuck {
     @Override
     public void rsls$schedulePlay(SoundInstance instance) {
         long scheduleTime = System.nanoTime();
-        this.taskQueue.send(() -> {
+        this.taskQueue.execute(() -> {
             if (!this.started) {
                 return;
             }
