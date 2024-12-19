@@ -21,6 +21,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -51,6 +52,8 @@ public abstract class MixinSoundSystem implements SoundSystemDuck {
     @Unique
     private final AtomicLong rsls$droppedSoundsPerf = new AtomicLong();
 
+    private final Set<SoundInstance> rsls$pendingSounds = Collections.synchronizedSet(new HashSetList());
+
     @Inject(method = "<init>", at = @At("RETURN"), remap = false)
     private void onInit(CallbackInfo ci) {
         this.soundEndTicks = Collections.synchronizedMap(this.soundEndTicks);
@@ -78,10 +81,12 @@ public abstract class MixinSoundSystem implements SoundSystemDuck {
     @Override
     public void rsls$schedulePlay(SoundInstance instance) {
         long scheduleTime = System.nanoTime();
+        this.rsls$pendingSounds.add(instance);
         this.taskQueue.execute(() -> {
             if (!this.started) {
                 return;
             }
+            this.rsls$pendingSounds.remove(instance);
             if (System.nanoTime() - scheduleTime < 1_000_000_000L) { // 1 second
                 this.play(instance);
             } else {
@@ -120,6 +125,11 @@ public abstract class MixinSoundSystem implements SoundSystemDuck {
     private <T> void tickDisableForEach(Stream<T> instance, Consumer<? super T> consumer) {
         if (instance == null) return;
         instance.forEach(consumer);
+    }
+
+    @ModifyReturnValue(method = "isPlaying", at = @At("RETURN"))
+    private boolean modifyIsPlaying(boolean original, SoundInstance sound) {
+        return original || this.rsls$pendingSounds.contains(sound);
     }
 
 }
