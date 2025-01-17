@@ -2,7 +2,6 @@
   "schemaVersion": 1,
   "id": "rsls",
   "version": "${version}",
-
   "name": "Raise Sound Limit Simplified",
   "description": "A mod that raises Minecraft sound sources limit in a simple way ",
   "authors": [
@@ -13,10 +12,8 @@
     "issues": "https://github.com/ishland/raise-sound-limit-simplified/issues",
     "homepage": "https://modrinth.com/mod/rsls"
   },
-
   "license": "MIT",
   "icon": "assets/rsls/icon.png",
-
   "environment": "client",
   "entrypoints": {
     "client": [
@@ -26,7 +23,6 @@
   "mixins": [
     "rsls.mixins.json"
   ],
-
   "depends": {
     "fabricloader": ">=0.15.0",
     "java": ">=17"
