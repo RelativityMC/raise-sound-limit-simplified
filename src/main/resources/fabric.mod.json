@@ -10,7 +10,8 @@
   ],
   "contact": {
     "sources": "https://github.com/ishland/raise-sound-limit-simplified",
-    "issues": "https://github.com/ishland/raise-sound-limit-simplified/issues"
+    "issues": "https://github.com/ishland/raise-sound-limit-simplified/issues",
+    "homepage": "https://modrinth.com/mod/rsls"
   },
 
   "license": "MIT",
