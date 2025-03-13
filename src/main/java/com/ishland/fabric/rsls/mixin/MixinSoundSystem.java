@@ -19,6 +19,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -52,7 +53,8 @@ public abstract class MixinSoundSystem implements SoundSystemDuck {
     @Unique
     private final AtomicLong rsls$droppedSoundsPerf = new AtomicLong();
 
-    private final Set<SoundInstance> rsls$pendingSounds = Collections.synchronizedSet(new HashSetList());
+    @Unique
+    private final Set<SoundInstance> rsls$pendingSounds = Collections.synchronizedSet(new HashSet<>());
 
     @Inject(method = "<init>", at = @At("RETURN"), remap = false)
     private void onInit(CallbackInfo ci) {
