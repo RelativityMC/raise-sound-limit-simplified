@@ -51,16 +51,18 @@ public abstract class MixinSoundSystem implements SoundSystemDuck {
     @Shadow private boolean started;
 
     @Unique
-    private final AtomicLong rsls$droppedSoundsPerf = new AtomicLong();
+    private AtomicLong rsls$droppedSoundsPerf;
 
     @Unique
-    private final Set<SoundInstance> rsls$pendingSounds = Collections.synchronizedSet(new HashSet<>());
+    private Set<SoundInstance> rsls$pendingSounds;
 
     @Inject(method = "<init>", at = @At("RETURN"), remap = false)
     private void onInit(CallbackInfo ci) {
         this.soundEndTicks = Collections.synchronizedMap(this.soundEndTicks);
         this.sources = Collections.synchronizedMap(this.sources);
         this.tickingSounds = new HashSetList<>(this.tickingSounds);
+        this.rsls$droppedSoundsPerf = new AtomicLong();
+        this.rsls$pendingSounds = Collections.synchronizedSet(new HashSet<>());
     }
 
     @Redirect(method = "tick(Z)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/sound/Channel;tick()V"))
