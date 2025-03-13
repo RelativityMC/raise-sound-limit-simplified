@@ -18,7 +18,6 @@
     "MixinSoundExecutor",
     "MixinSoundManager",
     "MixinSoundSystem",
-    "MixinSubtitlesHud_1_20_2",
     "access.ISoundSystem",
     "cloth_config.MixinSoundOptionsScreen"
   ],

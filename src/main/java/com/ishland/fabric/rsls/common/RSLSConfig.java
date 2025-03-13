@@ -1,7 +1,7 @@
 package com.ishland.fabric.rsls.common;
 
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.util.math.MathHelper;
+import net.neoforged.fml.loading.FMLPaths;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,7 +13,7 @@ import java.util.Properties;
 
 public class RSLSConfig {
 
-    private static final Path CONFIG_FILE = FabricLoader.getInstance().getConfigDir().resolve("rsls.properties");
+    private static final Path CONFIG_FILE = FMLPaths.CONFIGDIR.get().resolve("rsls.properties");
     public static final int probedMaxSourcesCount;
 
     static {

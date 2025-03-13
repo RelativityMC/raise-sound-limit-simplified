@@ -1,0 +1,27 @@
+modLoader="javafml"
+loaderVersion="*"
+license="MIT"
+issueTrackerURL="https://github.com/RelativityMC/raise-sound-limit-simplified/issues"
+clientSideOnly = true
+showAsResourcePack = false
+showAsDataPack = false
+
+[[mods]]
+modId="rsls"
+version="${version}"
+displayName="Raise Sound Limit Simplified"
+logoFile="assets/rsls/icon.png"
+authors="RelativityMC, ishland"
+description='''A mod that raises Minecraft sound sources limit in a simple way '''
+displayURL = "https://github.com/RelativityMC/raise-sound-limit-simplified"
+
+[[mixins]]
+config="rsls.mixins.json"
+
+[[dependencies.rsls]]
+modId = "minecraft"
+type = "required"
+versionRange = "[1.21,2.0)"
+ordering = "NONE"
+side = "BOTH"
+

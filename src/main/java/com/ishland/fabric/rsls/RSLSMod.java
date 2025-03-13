@@ -4,17 +4,18 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.ishland.fabric.rsls.common.RSLSConfig;
 import com.ishland.fabric.rsls.mixin.access.ISoundManager;
 import com.ishland.fabric.rsls.mixin.access.ISoundSystem;
-import net.fabricmc.api.ClientModInitializer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.sound.Channel;
 import net.minecraft.client.sound.SoundManager;
 import net.minecraft.client.sound.SoundSystem;
+import net.neoforged.fml.common.Mod;
 import org.spongepowered.asm.mixin.MixinEnvironment;
 
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-public class RSLSMod implements ClientModInitializer {
+@Mod("rsls")
+public class RSLSMod {
 
     private static final ScheduledThreadPoolExecutor scheduler =
             new ScheduledThreadPoolExecutor(
@@ -39,9 +40,7 @@ public class RSLSMod implements ClientModInitializer {
         }, 0, 20L, TimeUnit.MILLISECONDS);
     }
 
-    @Override
-    public void onInitializeClient() {
-//        MixinEnvironment.getCurrentEnvironment().audit();
+    {
         RSLSConfig.init();
         RSLSInjectorLWJGL.init();
     }

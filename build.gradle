@@ -1,11 +1,11 @@
 plugins {
-	id 'fabric-loom' version '1.10-SNAPSHOT'
+	id 'dev.architectury.loom' version '1.9-SNAPSHOT'
 	id 'maven-publish'
 }
 
 java {
-	sourceCompatibility = JavaVersion.VERSION_17
-	targetCompatibility = JavaVersion.VERSION_17
+	sourceCompatibility = JavaVersion.VERSION_21
+	targetCompatibility = JavaVersion.VERSION_21
 }
 
 base {
@@ -25,16 +25,19 @@ repositories {
 	// for more information about repositories.
 
 	maven { url = "https://maven.shedaniel.me/" }
+	maven { url = "https://maven.neoforged.net/releases/" }
 }
 
 dependencies {
 	// To change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
-	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	mappings loom.layered {
+		it.mappings("net.fabricmc:yarn:$project.yarn_mappings:v2")
+		it.mappings("dev.architectury:yarn-mappings-patch-neoforge:$project.yarn_mappings_patch_neoforge_version")
+	}
+	neoForge "net.neoforged:neoforge:${project.forge_version}"
 
-	modImplementation fabricApi.module("fabric-resource-loader-v0", project.fabric_version)
-	modImplementation "me.shedaniel.cloth:cloth-config-fabric:17.0.144"
+	modImplementation "me.shedaniel.cloth:cloth-config-neoforge:17.0.144"
 
 	testImplementation 'org.junit.jupiter:junit-jupiter:5.8.2'
 }
@@ -51,19 +54,27 @@ test {
 
 loom {
 	accessWidenerPath = file("src/main/resources/rsls.accesswidener")
+	mixin {
+		useLegacyMixinAp = true
+	}
+}
+
+remapJar {
+	useMixinAP = true
+	atAccessWideners.add("rsls.accesswidener")
 }
 
 processResources {
 	inputs.property "version", project.version
 
-	filesMatching("fabric.mod.json") {
+	filesMatching("META-INF/neoforge.mods.toml") {
 		expand "version": project.version
 	}
 }
 
 tasks.withType(JavaCompile).configureEach {
 	// Minecraft 1.18 (1.18-pre2) upwards uses Java 17.
-	it.options.release = 17
+	it.options.release = 21
 }
 
 java {
@@ -76,6 +87,11 @@ java {
 jar {
 	from("LICENSE") {
 		rename { "${it}_${project.archivesBaseName}"}
+	}
+	manifest {
+		attributes([
+				"MixinConfigs": "rsls.mixins.json"
+		])
 	}
 }
 

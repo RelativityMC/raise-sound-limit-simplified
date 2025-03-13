@@ -2,7 +2,7 @@ package com.ishland.fabric.rsls.common;
 
 import com.google.common.collect.Iterators;
 import it.unimi.dsi.fastutil.objects.ObjectCollection;
-import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -10,7 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
-public class HashSetList<E> extends ObjectLinkedOpenHashSet<E> implements List<E> {
+public class HashSetList<E> extends ObjectOpenHashSet<E> implements List<E> { // cannot use linked hash set due to jdk21+
 
     public HashSetList(int expected, float f) {
         super(expected, f);
