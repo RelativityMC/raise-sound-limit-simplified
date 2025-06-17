@@ -39,8 +39,6 @@ public abstract class MixinSoundSystem implements SoundSystemDuck {
 
     @Shadow @Final private List<TickableSoundInstance> soundsToPlayNextTick;
 
-    @Shadow public abstract void play(SoundInstance sound);
-
     @Mutable
     @Shadow @Final private List<TickableSoundInstance> tickingSounds;
 
@@ -92,7 +90,7 @@ public abstract class MixinSoundSystem implements SoundSystemDuck {
             }
             this.rsls$pendingSounds.remove(instance);
             if (System.nanoTime() - scheduleTime < 1_000_000_000L) { // 1 second
-                this.play(instance);
+                this.rsls$playInternal0(instance);
             } else {
                 this.rsls$droppedSoundsPerf.incrementAndGet();
             }
@@ -112,11 +110,6 @@ public abstract class MixinSoundSystem implements SoundSystemDuck {
         } else {
             return original;
         }
-    }
-
-    @Redirect(method = "tick()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/sound/SoundSystem;play(Lnet/minecraft/client/sound/SoundInstance;)V"))
-    private void redirectDelayedPlay(SoundSystem instance, SoundInstance sound) {
-        this.rsls$schedulePlay(sound);
     }
 
     @Redirect(method = "tick()V", at = @At(value = "INVOKE", target = "Ljava/util/stream/Stream;filter(Ljava/util/function/Predicate;)Ljava/util/stream/Stream;"))

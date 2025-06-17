@@ -1,6 +1,6 @@
 package com.ishland.fabric.rsls.mixin;
 
-import com.ishland.fabric.rsls.common.SoundSystemDuck;
+import com.ishland.fabric.rsls.common.SoundManagerDuck;
 import com.ishland.fabric.rsls.mixin.access.ISoundExecutor;
 import com.ishland.fabric.rsls.mixin.access.ISoundSystem;
 import net.minecraft.client.sound.SoundExecutor;
@@ -10,10 +10,8 @@ import net.minecraft.client.sound.SoundManager;
 import net.minecraft.client.sound.SoundSystem;
 import net.minecraft.client.sound.TickableSoundInstance;
 import net.minecraft.client.sound.WeightedSoundSet;
-import net.minecraft.resource.ResourceManager;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.profiler.Profiler;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -28,22 +26,16 @@ import java.util.Collections;
 import java.util.Map;
 
 @Mixin(SoundManager.class)
-public abstract class MixinSoundManager {
+public abstract class MixinSoundManager implements SoundManagerDuck {
 
     @Shadow @Final private SoundSystem soundSystem;
-
-    @Shadow protected abstract void apply(SoundManager.SoundList soundList, ResourceManager resourceManager, Profiler profiler);
 
     @Mutable
     @Shadow @Final private Map<Identifier, WeightedSoundSet> sounds;
 
     @Shadow public abstract void playNextTick(TickableSoundInstance sound);
 
-    @Shadow public abstract void play(SoundInstance sound);
-
     @Shadow public abstract void play(SoundInstance sound, int delay);
-
-    @Shadow public abstract void pauseAll();
 
     @Shadow public abstract void stopAll();
 
@@ -76,15 +68,6 @@ public abstract class MixinSoundManager {
         }
     }
 
-    @Inject(method = "play(Lnet/minecraft/client/sound/SoundInstance;)V", at = @At("HEAD"), cancellable = true)
-    private void onPlay(SoundInstance sound, CallbackInfo ci) {
-        if (rsls$shouldRunOffthread()) {
-            ci.cancel();
-//            ((ISoundSystem) this.soundSystem).getTaskQueue().execute(() -> play(sound));
-            ((SoundSystemDuck) this.soundSystem).rsls$schedulePlay(sound);
-        }
-    }
-
     @Inject(method = "play(Lnet/minecraft/client/sound/SoundInstance;I)V", at = @At("HEAD"), cancellable = true)
     private void onPlay(SoundInstance sound, int delay, CallbackInfo ci) {
         if (rsls$shouldRunOffthread()) {
@@ -94,14 +77,6 @@ public abstract class MixinSoundManager {
     }
 
     // updateListenerPosition not needed
-
-    @Inject(method = "pauseAll", at = @At("HEAD"), cancellable = true)
-    private void onPauseAll(CallbackInfo ci) {
-        if (rsls$shouldRunOffthread()) {
-            ci.cancel();
-            ((ISoundSystem) this.soundSystem).getTaskQueue().execute(this::pauseAll);
-        }
-    }
 
     @Inject(method = "stopAll", at = @At("HEAD"), cancellable = true)
     private void onStopAll(CallbackInfo ci) {
@@ -170,7 +145,7 @@ public abstract class MixinSoundManager {
     }
 
     @Unique
-    private boolean rsls$shouldRunOffthread() {
+    public boolean rsls$shouldRunOffthread() {
         final SoundExecutor executor = ((ISoundSystem) this.soundSystem).getTaskQueue();
         final Thread thread = ((ISoundExecutor) executor).getThread();
         return Thread.currentThread() != thread;

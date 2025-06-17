@@ -6,4 +6,6 @@ public interface SoundSystemDuck {
 
     void rsls$schedulePlay(SoundInstance instance);
 
+    void rsls$playInternal0(SoundInstance instance);
+
 }
