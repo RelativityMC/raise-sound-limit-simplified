@@ -36,6 +36,7 @@ public abstract class MixinSoundManager1_21_6 {
                 return;
             }
             // soundset check skipped
+            sound.getSoundSet((SoundManager)(Object)this); //this generates "soundeventaccessor" for AmbientSounds mod,so getSound() won't crash
             Sound sound2 = sound.getSound();
             if (sound2 == SoundManager.INTENTIONALLY_EMPTY_SOUND || sound2 == SoundManager.MISSING_SOUND) {
                 cir.setReturnValue(SoundSystem.PlayResult.NOT_STARTED);
