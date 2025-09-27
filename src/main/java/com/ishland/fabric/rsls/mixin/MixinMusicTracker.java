@@ -52,4 +52,13 @@ public class MixinMusicTracker {
         this.client.execute(() -> original.call(instance));
     }
 
+    @WrapMethod(method = "tryShowToast")
+    private void wrapTryShowToast(Operation<Void> original) {
+        if (this.client.isOnThread()) {
+            original.call();
+        } else {
+            this.client.execute(original::call);
+        }
+    }
+
 }

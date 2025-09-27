@@ -1,4 +1,4 @@
-package com.ishland.fabric.rsls.mixin.versions;
+package com.ishland.fabric.rsls.mixin.versions.sndmgr.patch_0;
 
 import com.ishland.fabric.rsls.common.SoundManagerDuck;
 import com.ishland.fabric.rsls.common.SoundSystemDuck;

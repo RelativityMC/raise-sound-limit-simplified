@@ -17,6 +17,7 @@ public class RSLSMixinPlugin implements IMixinConfigPlugin {
     private static final boolean PRE_1_20_3;
     private static final boolean POST_1_20_3;
     private static final boolean POST_1_21_5;
+    private static final boolean POST_1_21_8;
 
     static {
         try {
@@ -24,6 +25,7 @@ public class RSLSMixinPlugin implements IMixinConfigPlugin {
             PRE_1_20_3 = VersionPredicate.parse("<=1.20.2").test(FabricLoader.getInstance().getModContainer("minecraft").get().getMetadata().getVersion());
             POST_1_20_3 = VersionPredicate.parse(">1.20.2").test(FabricLoader.getInstance().getModContainer("minecraft").get().getMetadata().getVersion());
             POST_1_21_5 = VersionPredicate.parse(">1.21.5").test(FabricLoader.getInstance().getModContainer("minecraft").get().getMetadata().getVersion());
+            POST_1_21_8 = VersionPredicate.parse(">1.21.8").test(FabricLoader.getInstance().getModContainer("minecraft").get().getMetadata().getVersion());
         } catch (VersionParsingException e) {
             throw new RuntimeException(e);
         }
@@ -49,10 +51,14 @@ public class RSLSMixinPlugin implements IMixinConfigPlugin {
             return PRE_1_20_3;
         if (mixinClassName.equals("com.ishland.fabric.rsls.mixin.MixinBiomeEffectSoundPlayer"))
             return !PRE_1_19;
-        if (mixinClassName.equals("com.ishland.fabric.rsls.mixin.versions.MixinSoundManager1_21_5"))
+        if (mixinClassName.equals("com.ishland.fabric.rsls.mixin.versions.sndmgr.patch_0.MixinSoundManager1_21_5"))
             return !POST_1_21_5;
-        if (mixinClassName.equals("com.ishland.fabric.rsls.mixin.versions.MixinSoundManager1_21_6"))
+        if (mixinClassName.equals("com.ishland.fabric.rsls.mixin.versions.sndmgr.patch_0.MixinSoundManager1_21_6"))
             return POST_1_21_5;
+        if (mixinClassName.equals("com.ishland.fabric.rsls.mixin.versions.sndmgr.patch_1.MixinSoundManager1_21_8"))
+            return !POST_1_21_8;
+        if (mixinClassName.equals("com.ishland.fabric.rsls.mixin.versions.sndmgr.patch_1.MixinSoundManager1_21_9"))
+            return POST_1_21_8;
         if (mixinClassName.equals("com.ishland.fabric.rsls.mixin.versions.MixinSoundSystem1_21_5"))
             return !POST_1_21_5;
         if (mixinClassName.equals("com.ishland.fabric.rsls.mixin.versions.MixinSoundSystem1_21_6"))

@@ -37,15 +37,11 @@ public abstract class MixinSoundManager implements SoundManagerDuck {
 
     @Shadow public abstract void play(SoundInstance sound, int delay);
 
-    @Shadow public abstract void stopAll();
-
     @Shadow public abstract void close();
 
     @Shadow public abstract void tick(boolean paused);
 
     @Shadow public abstract void resumeAll();
-
-    @Shadow public abstract void updateSoundVolume(SoundCategory category, float volume);
 
     @Shadow public abstract void registerListener(SoundInstanceListener listener);
 
@@ -78,13 +74,7 @@ public abstract class MixinSoundManager implements SoundManagerDuck {
 
     // updateListenerPosition not needed
 
-    @Inject(method = "stopAll", at = @At("HEAD"), cancellable = true)
-    private void onStopAll(CallbackInfo ci) {
-        if (rsls$shouldRunOffthread()) {
-            ci.cancel();
-            ((ISoundSystem) this.soundSystem).getTaskQueue().execute(this::stopAll);
-        }
-    }
+    // stopAll not needed
 
     @Inject(method = "close", at = @At("HEAD"), cancellable = true)
     private void onClose(CallbackInfo ci) {
@@ -107,14 +97,6 @@ public abstract class MixinSoundManager implements SoundManagerDuck {
         if (rsls$shouldRunOffthread()) {
             ci.cancel();
             ((ISoundSystem) this.soundSystem).getTaskQueue().execute(this::resumeAll);
-        }
-    }
-
-    @Inject(method = "updateSoundVolume", at = @At("HEAD"), cancellable = true)
-    private void onUpdateSoundVolume(SoundCategory category, float volume, CallbackInfo ci) {
-        if (rsls$shouldRunOffthread()) {
-            ci.cancel();
-            ((ISoundSystem) this.soundSystem).getTaskQueue().execute(() -> this.updateSoundVolume(category, volume));
         }
     }
 
