@@ -24,7 +24,7 @@
     "rsls.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.15.0",
+    "fabricloader": ">=0.16.0",
     "java": ">=17"
   },
   "recommends": {
