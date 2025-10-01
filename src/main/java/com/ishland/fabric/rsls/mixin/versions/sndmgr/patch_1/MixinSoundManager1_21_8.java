@@ -18,18 +18,18 @@ public abstract class MixinSoundManager1_21_8 {
 
     @Dynamic
     @Shadow
-    public abstract void method_4865(SoundCategory category, float volume); // updateSoundVolume
+    public abstract void updateSourceVolume(SoundCategory category, float volume); // updateSoundVolume
 
     @Shadow
     @Final
     private SoundSystem soundSystem;
 
     @Dynamic
-    @Inject(method = "method_4865", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "updateSourceVolume(Lnet/minecraft/sounds/SoundSource;F)V", at = @At("HEAD"), cancellable = true)
     private void onUpdateSoundVolume(SoundCategory category, float volume, CallbackInfo ci) {
         if (((SoundManagerDuck) this).rsls$shouldRunOffthread()) {
             ci.cancel();
-            ((ISoundSystem) this.soundSystem).getTaskQueue().execute(() -> this.method_4865(category, volume));
+            ((ISoundSystem) this.soundSystem).getTaskQueue().execute(() -> this.updateSourceVolume(category, volume));
         }
     }
 

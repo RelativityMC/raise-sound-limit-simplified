@@ -12,7 +12,8 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 @Mixin(SoundSystem.class)
 public abstract class MixinSoundSystem1_21_5 implements SoundSystemDuck {
 
-    @Shadow(aliases = "method_4854")
+    @Dynamic
+    @Shadow
     public abstract void play(SoundInstance sound);
 
     @Override
@@ -21,7 +22,7 @@ public abstract class MixinSoundSystem1_21_5 implements SoundSystemDuck {
     }
 
     @Dynamic
-    @Redirect(method = "tick()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/sound/SoundSystem;method_4854(Lnet/minecraft/client/sound/SoundInstance;)V"))
+    @Redirect(method = "tickNonPaused()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/sound/SoundSystem;play(Lnet/minecraft/client/sound/SoundInstance;)V"))
     private void redirectDelayedPlay(SoundSystem instance, SoundInstance sound) {
         this.rsls$schedulePlay(sound);
     }

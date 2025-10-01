@@ -23,7 +23,7 @@ public class MixinClientPlayNetworkHandler {
     @WrapOperation(
             method = {"onPlaySound", "method_11104"},
             at = {
-                    @At(value = "INVOKE", target = "Lnet/minecraft/network/NetworkThreadUtils;method_11074(Lnet/minecraft/network/packet/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/util/thread/ThreadExecutor;)V"),
+                    @At(value = "INVOKE", target = "Lnet/minecraft/network/NetworkThreadUtils;ensureRunningOnSameThread(Lnet/minecraft/network/packet/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/util/thread/ThreadExecutor;)V"),
                     @At(value = "INVOKE", target = "Lnet/minecraft/network/NetworkThreadUtils;forceMainThread(Lnet/minecraft/network/packet/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/network/PacketApplyBatcher;)V"),
             },
             require = 1

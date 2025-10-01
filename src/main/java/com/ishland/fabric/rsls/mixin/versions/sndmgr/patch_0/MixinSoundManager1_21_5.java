@@ -17,13 +17,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(SoundManager.class)
 public abstract class MixinSoundManager1_21_5 {
 
-    @Shadow(aliases = "method_4879")
+    @Shadow(aliases = "pause")
     public abstract void pauseAll();
 
     @Shadow @Final private SoundSystem soundSystem;
 
     @Dynamic
-    @Inject(method = "method_4873(Lnet/minecraft/client/sound/SoundInstance;)V", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "play(Lnet/minecraft/client/sound/SoundInstance;)V", at = @At("HEAD"), cancellable = true)
     private void onPlay(SoundInstance sound, CallbackInfo ci) {
         if (((SoundManagerDuck) this).rsls$shouldRunOffthread()) {
             ci.cancel();
@@ -32,7 +32,7 @@ public abstract class MixinSoundManager1_21_5 {
     }
 
     @Dynamic
-    @Inject(method = "method_4879", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "pause()V", at = @At("HEAD"), cancellable = true)
     private void onPauseAll(CallbackInfo ci) {
         if (((SoundManagerDuck) this).rsls$shouldRunOffthread()) {
             ci.cancel();
