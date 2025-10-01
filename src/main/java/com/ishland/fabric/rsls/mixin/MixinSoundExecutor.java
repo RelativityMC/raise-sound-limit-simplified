@@ -17,13 +17,4 @@ public abstract class MixinSoundExecutor extends ThreadExecutor<Runnable> {
         super(name);
     }
 
-    /**
-     * @author ishland
-     * @reason don't recreate thread
-     */
-    @Overwrite
-    public void restart() {
-        this.cancelTasks();
-    }
-
 }

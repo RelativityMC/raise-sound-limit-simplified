@@ -1,5 +1,5 @@
 plugins {
-	id 'dev.architectury.loom' version '1.9-SNAPSHOT'
+	id 'dev.architectury.loom' version '1.11-SNAPSHOT'
 	id 'maven-publish'
 }
 
@@ -37,9 +37,10 @@ dependencies {
 	}
 	neoForge "net.neoforged:neoforge:${project.forge_version}"
 
-	modImplementation "me.shedaniel.cloth:cloth-config-neoforge:17.0.144"
+    modCompileOnly "me.shedaniel.cloth:cloth-config-neoforge:19.0.146"
 
-	testImplementation 'org.junit.jupiter:junit-jupiter:5.8.2'
+	testImplementation 'org.junit.jupiter:junit-jupiter:5.13.4'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
 test {
@@ -86,7 +87,7 @@ java {
 
 jar {
 	from("LICENSE") {
-		rename { "${it}_${project.archivesBaseName}"}
+		rename { "${it}_${project.archives_base_name}"}
 	}
 	manifest {
 		attributes([

@@ -25,6 +25,20 @@ public class RSLSMixinPlugin implements IMixinConfigPlugin {
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
         if (mixinClassName.startsWith("com.ishland.fabric.rsls.mixin.cloth_config."))
             return FMLLoader.getLoadingModList().getMods().stream().anyMatch(modInfo1 -> modInfo1.getModId().equals("cloth_config"));
+        if (mixinClassName.equals("com.ishland.fabric.rsls.mixin.versions.sndmgr.patch_0.MixinSoundManager1_21_5"))
+            return !POST_1_21_5;
+        if (mixinClassName.equals("com.ishland.fabric.rsls.mixin.versions.sndmgr.patch_0.MixinSoundManager1_21_6"))
+            return POST_1_21_5;
+        if (mixinClassName.equals("com.ishland.fabric.rsls.mixin.versions.sndmgr.patch_1.MixinSoundManager1_21_8"))
+            return !POST_1_21_8;
+        if (mixinClassName.equals("com.ishland.fabric.rsls.mixin.versions.sndmgr.patch_1.MixinSoundManager1_21_9"))
+            return POST_1_21_8;
+        if (mixinClassName.equals("com.ishland.fabric.rsls.mixin.versions.MixinSoundSystem1_21_5"))
+            return !POST_1_21_5;
+        if (mixinClassName.equals("com.ishland.fabric.rsls.mixin.versions.MixinSoundSystem1_21_6"))
+            return POST_1_21_5;
+        if (mixinClassName.equals("com.ishland.fabric.rsls.mixin.MixinMusicTracker"))
+            return POST_1_21_5;
         return true;
     }
 

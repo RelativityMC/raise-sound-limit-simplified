@@ -15,11 +15,18 @@
   "client": [
     "MixinBiomeEffectSoundPlayer",
     "MixinClientPlayNetworkHandler",
+    "MixinMusicTracker",
     "MixinSoundExecutor",
     "MixinSoundManager",
     "MixinSoundSystem",
     "access.ISoundSystem",
-    "cloth_config.MixinSoundOptionsScreen"
+    "cloth_config.MixinSoundOptionsScreen",
+    "versions.MixinSoundSystem1_21_5",
+    "versions.MixinSoundSystem1_21_6",
+    "versions.sndmgr.patch_0.MixinSoundManager1_21_5",
+    "versions.sndmgr.patch_0.MixinSoundManager1_21_6",
+    "versions.sndmgr.patch_1.MixinSoundManager1_21_8",
+    "versions.sndmgr.patch_1.MixinSoundManager1_21_9"
   ],
   "plugin": "com.ishland.fabric.rsls.mixin.RSLSMixinPlugin"
 }
