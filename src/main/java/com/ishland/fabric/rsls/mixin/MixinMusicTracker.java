@@ -6,7 +6,6 @@ import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.sound.MusicInstance;
 import net.minecraft.client.sound.MusicTracker;
 import net.minecraft.client.sound.SoundExecutor;
 import net.minecraft.client.sound.SoundManager;
@@ -17,6 +16,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Coerce;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
@@ -31,23 +31,19 @@ public class MixinMusicTracker {
     @Unique
     private CompletableFuture<Void> rsls$playFuture;
 
-    @Inject(method = "play", at = @At("HEAD"), cancellable = true)
-    private void prePlay(MusicInstance instance, CallbackInfo ci) {
+    @WrapMethod(method = {"Lnet/minecraft/class_1142;method_4858(Lnet/minecraft/class_10383;)V", "play"})
+    private void wrapPlay(@Coerce Object instance, Operation<Void> original) {
         CompletableFuture<Void> rsls$playFuture1 = this.rsls$playFuture;
-        if (rsls$playFuture1 == null || rsls$playFuture1.isDone()) {
-            ci.cancel();
+        if (rsls$playFuture1 != null && !rsls$playFuture1.isDone()) {
+            return;
         }
-    }
-
-    @WrapMethod(method = "play")
-    private void wrapPlay(MusicInstance instance, Operation<Void> original) {
         SoundManager soundManager = this.client.getSoundManager();
         SoundSystem soundSystem = ((ISoundManager) soundManager).getSoundSystem();
         SoundExecutor taskQueue = ((ISoundSystem) soundSystem).getTaskQueue();
         this.rsls$playFuture = CompletableFuture.runAsync(() -> original.call(instance), taskQueue).orTimeout(15, TimeUnit.SECONDS);
     }
 
-    @WrapOperation(method = "play", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/toast/ToastManager;onMusicTrackStart()V"))
+    @WrapOperation(method = {"Lnet/minecraft/class_1142;method_4858(Lnet/minecraft/class_10383;)V", "play"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/client/toast/ToastManager;onMusicTrackStart()V"))
     private void wrapPlayListener(ToastManager instance, Operation<Void> original) {
         this.client.execute(() -> original.call(instance));
     }
