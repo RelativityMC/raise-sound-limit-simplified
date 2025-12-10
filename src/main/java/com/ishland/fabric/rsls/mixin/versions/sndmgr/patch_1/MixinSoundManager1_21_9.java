@@ -23,7 +23,7 @@ public abstract class MixinSoundManager1_21_9 {
     private SoundSystem soundSystem;
 
     @Dynamic
-    @WrapMethod(method = {"method_4865(Lnet/minecraft/class_3419;)V", "refreshSoundVolumes"})
+    @WrapMethod(method = {"updateSourceVolume(Lnet/minecraft/sounds/SoundSource;)V", "refreshSoundVolumes"})
     private void onUpdateSoundVolume(SoundCategory category, Operation<Void> original) {
         if (((SoundManagerDuck) this).rsls$shouldRunOffthread()) {
             ((ISoundSystem) this.soundSystem).getTaskQueue().execute(() -> original.call(category));

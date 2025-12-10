@@ -10,7 +10,6 @@ import net.minecraft.client.sound.SoundManager;
 import net.minecraft.client.sound.SoundSystem;
 import net.minecraft.client.sound.WeightedSoundSet;
 import net.minecraft.sound.SoundCategory;
-import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -25,7 +24,7 @@ import java.util.Set;
 @Mixin(SoundManager.class)
 public abstract class MixinSoundManager1_21_6 {
 
-    private static final Set<Identifier> rsls$unknownSounds = Sets.newConcurrentHashSet();
+//    private static final Set<Identifier> rsls$unknownSounds = Sets.newConcurrentHashSet();
 
     @Shadow @Final
     private SoundSystem soundSystem;
@@ -49,14 +48,15 @@ public abstract class MixinSoundManager1_21_6 {
             }
 
             WeightedSoundSet soundSet = sound.getSoundSet((SoundManager) (Object) this);
-            Identifier identifier = sound.getId();
-            if (soundSet == null) {
-                if (rsls$unknownSounds.add(identifier)) {
-                    LOGGER.warn("Unable to play unknown soundEvent:  {}", identifier);
-                }
-                cir.setReturnValue(SoundSystem.PlayResult.NOT_STARTED);
-                return;
-            }
+            // Identifier is renamed in 1.21.11, so skip checks, but keep side effect
+//            Identifier identifier = sound.getId();
+//            if (soundSet == null) {
+//                if (rsls$unknownSounds.add(identifier)) {
+//                    LOGGER.warn("Unable to play unknown soundEvent:  {}", identifier);
+//                }
+//                cir.setReturnValue(SoundSystem.PlayResult.NOT_STARTED);
+//                return;
+//            }
 
             Sound sound2 = sound.getSound();
             if (sound2 == SoundManager.INTENTIONALLY_EMPTY_SOUND || sound2 == SoundManager.MISSING_SOUND) {

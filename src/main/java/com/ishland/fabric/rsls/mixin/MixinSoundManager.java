@@ -3,6 +3,9 @@ package com.ishland.fabric.rsls.mixin;
 import com.ishland.fabric.rsls.common.SoundManagerDuck;
 import com.ishland.fabric.rsls.mixin.access.ISoundExecutor;
 import com.ishland.fabric.rsls.mixin.access.ISoundSystem;
+import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.minecraft.client.sound.SoundExecutor;
 import net.minecraft.client.sound.SoundInstance;
 import net.minecraft.client.sound.SoundInstanceListener;
@@ -11,7 +14,6 @@ import net.minecraft.client.sound.SoundSystem;
 import net.minecraft.client.sound.TickableSoundInstance;
 import net.minecraft.client.sound.WeightedSoundSet;
 import net.minecraft.sound.SoundCategory;
-import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -19,6 +21,7 @@ import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Coerce;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
@@ -31,7 +34,7 @@ public abstract class MixinSoundManager implements SoundManagerDuck {
     @Shadow @Final private SoundSystem soundSystem;
 
     @Mutable
-    @Shadow @Final private Map<Identifier, WeightedSoundSet> sounds;
+    @Shadow @Final private Map<?, WeightedSoundSet> sounds;
 
     @Shadow public abstract void playNextTick(TickableSoundInstance sound);
 
@@ -46,8 +49,6 @@ public abstract class MixinSoundManager implements SoundManagerDuck {
     @Shadow public abstract void registerListener(SoundInstanceListener listener);
 
     @Shadow public abstract void unregisterListener(SoundInstanceListener listener);
-
-    @Shadow public abstract void stopSounds(@Nullable Identifier id, @Nullable SoundCategory soundCategory);
 
     @Shadow public abstract void reloadSounds();
 
@@ -118,11 +119,12 @@ public abstract class MixinSoundManager implements SoundManagerDuck {
         }
     }
 
-    @Inject(method = "stopSounds", at = @At("HEAD"), cancellable = true)
-    private void onStopSounds(Identifier id, SoundCategory soundCategory, CallbackInfo ci) {
+    @WrapMethod(method = {"stop(Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/sounds/SoundSource;)V", "stopSounds"})
+    private void onStopSounds(@Coerce Object id, SoundCategory soundCategory, Operation<Void> original) {
         if (rsls$shouldRunOffthread()) {
-            ci.cancel();
-            ((ISoundSystem) this.soundSystem).getTaskQueue().execute(() -> this.stopSounds(id, soundCategory));
+            ((ISoundSystem) this.soundSystem).getTaskQueue().execute(() -> original.call(id, soundCategory));
+        } else {
+            original.call(id, soundCategory);
         }
     }
 
