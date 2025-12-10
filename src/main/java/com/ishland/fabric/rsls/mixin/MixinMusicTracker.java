@@ -31,7 +31,7 @@ public class MixinMusicTracker {
     @Unique
     private CompletableFuture<Void> rsls$playFuture;
 
-    @WrapMethod(method = {"Lnet/minecraft/class_1142;method_4858(Lnet/minecraft/class_10383;)V", "play"})
+    @WrapMethod(method = {"method_4858(Lnet/minecraft/class_10383;)V", "play"})
     private void wrapPlay(@Coerce Object instance, Operation<Void> original) {
         CompletableFuture<Void> rsls$playFuture1 = this.rsls$playFuture;
         if (rsls$playFuture1 != null && !rsls$playFuture1.isDone()) {
@@ -43,7 +43,7 @@ public class MixinMusicTracker {
         this.rsls$playFuture = CompletableFuture.runAsync(() -> original.call(instance), taskQueue).orTimeout(15, TimeUnit.SECONDS);
     }
 
-    @WrapOperation(method = {"Lnet/minecraft/class_1142;method_4858(Lnet/minecraft/class_10383;)V", "play"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/client/toast/ToastManager;onMusicTrackStart()V"))
+    @WrapOperation(method = {"method_4858(Lnet/minecraft/class_10383;)V", "play"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/client/toast/ToastManager;onMusicTrackStart()V"))
     private void wrapPlayListener(ToastManager instance, Operation<Void> original) {
         this.client.execute(() -> original.call(instance));
     }
