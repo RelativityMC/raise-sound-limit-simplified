@@ -2,6 +2,8 @@ package com.ishland.fabric.rsls.mixin.versions.sndmgr.patch_1;
 
 import com.ishland.fabric.rsls.common.SoundManagerDuck;
 import com.ishland.fabric.rsls.mixin.access.ISoundSystem;
+import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import net.minecraft.client.sound.SoundManager;
 import net.minecraft.client.sound.SoundSystem;
 import net.minecraft.sound.SoundCategory;
@@ -17,18 +19,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class MixinSoundManager1_21_9 {
 
     @Shadow
-    public abstract void updateSoundVolume(SoundCategory category);
-
-    @Shadow
     @Final
     private SoundSystem soundSystem;
 
     @Dynamic
-    @Inject(method = "updateSoundVolume", at = @At("HEAD"), cancellable = true)
-    private void onUpdateSoundVolume(SoundCategory category, CallbackInfo ci) {
+    @WrapMethod(method = {"method_4865(Lnet/minecraft/class_3419;)V", "refreshSoundVolumes"})
+    private void onUpdateSoundVolume(SoundCategory category, Operation<Void> original) {
         if (((SoundManagerDuck) this).rsls$shouldRunOffthread()) {
-            ci.cancel();
-            ((ISoundSystem) this.soundSystem).getTaskQueue().execute(() -> this.updateSoundVolume(category));
+            ((ISoundSystem) this.soundSystem).getTaskQueue().execute(() -> original.call(category));
         }
     }
 

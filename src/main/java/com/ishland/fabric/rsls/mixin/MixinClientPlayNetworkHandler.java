@@ -33,6 +33,7 @@ public class MixinClientPlayNetworkHandler {
                                                               @Share("rsls$originalOp") LocalRef<Operation<Void>> rsls$originalOperation) {
         // no-op as we don't want this to be executed sync
         rsls$originalOperation.set(original);
+        rsls$thirdParam.set(thirdParam);
     }
 
     @Dynamic
