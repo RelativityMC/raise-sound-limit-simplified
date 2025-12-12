@@ -9,12 +9,22 @@ import org.spongepowered.asm.mixin.Shadow;
 @Mixin(SoundExecutor.class)
 public abstract class MixinSoundExecutor extends ThreadExecutor<Runnable> {
 
-    @Shadow private volatile boolean stopped;
-
-    @Shadow private Thread thread;
-
     protected MixinSoundExecutor(String name) {
         super(name);
+    }
+
+    @Override
+    public boolean runTask() {
+        synchronized (this) {
+            return super.runTask();
+        }
+    }
+
+    @Override
+    protected void cancelTasks() {
+        synchronized (this) {
+            super.cancelTasks();
+        }
     }
 
 }
