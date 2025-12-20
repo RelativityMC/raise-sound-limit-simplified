@@ -7,7 +7,8 @@
     "MixinSoundEngine",
     "MixinSubtitlesHud_1_20_3",
     "access.ISoundExecutor",
-    "access.ISoundManager"
+    "access.ISoundManager",
+    "access.IThreadExecutor"
   ],
   "injectors": {
     "defaultRequire": 1
