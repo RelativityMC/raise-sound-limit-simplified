@@ -6,6 +6,7 @@
   "mixins": [
     "MixinSoundEngine",
     "MixinSubtitlesHud_1_20_3",
+    "MixinWorld",
     "access.ISoundExecutor",
     "access.ISoundManager",
     "access.IThreadExecutor"
@@ -14,6 +15,7 @@
     "defaultRequire": 1
   },
   "client": [
+    "MixinAbstractSoundInstance",
     "MixinBiomeEffectSoundPlayer",
     "MixinClientPlayNetworkHandler",
     "MixinMusicTracker",
