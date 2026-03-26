@@ -43,7 +43,7 @@ public class RSLSInjectorFFM {
                     final MemorySegment putenv = Linker.nativeLinker().defaultLookup().findOrThrow(PlatformDependent.isWindows() ? "_putenv" : "putenv");
                     MethodHandle putenvHandle = Linker.nativeLinker().downcallHandle(
                             putenv,
-                            FunctionDescriptor.ofVoid(ValueLayout.JAVA_INT, ValueLayout.ADDRESS)
+                            FunctionDescriptor.of(ValueLayout.JAVA_INT, ValueLayout.ADDRESS)
                     );
                     final int result = (int) putenvHandle.invokeExact(buf);
                     if (result != 0) throw new RuntimeException("Error %d when setting env".formatted(result));

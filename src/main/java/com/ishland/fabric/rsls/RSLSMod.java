@@ -43,6 +43,6 @@ public class RSLSMod implements ClientModInitializer {
     public void onInitializeClient() {
 //        MixinEnvironment.getCurrentEnvironment().audit();
         RSLSConfig.init();
-        RSLSInjectorLWJGL.init();
+        RSLSInjectorFFM.init();
     }
 }
