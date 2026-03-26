@@ -24,12 +24,11 @@
     "rsls.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.16.0",
-    "java": ">=17"
+    "fabricloader": ">=0.18.4",
+    "java": ">=25",
+    "minecraft": ">=26.1"
   },
   "recommends": {
-    "fabric-resource-loader-v0": "*",
-    "cloth-config": "*"
   },
   "custom": {
     "modmenu": {
