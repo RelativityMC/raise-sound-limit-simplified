@@ -1,3 +1,5 @@
+/*
+
 package com.ishland.fabric.rsls.mixin.cloth_config;
 
 import com.ishland.fabric.rsls.common.cloth_config.ConfigScreenUtils;
@@ -29,3 +31,5 @@ public abstract class MixinSoundOptionsScreen extends GameOptionsScreen {
     }
 
 }
+
+ */

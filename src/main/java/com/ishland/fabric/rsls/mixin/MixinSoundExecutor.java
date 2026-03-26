@@ -14,8 +14,8 @@ public abstract class MixinSoundExecutor extends ThreadExecutor<Runnable> {
     @Shadow
     private volatile boolean stopped;
 
-    protected MixinSoundExecutor(String name) {
-        super(name);
+    protected MixinSoundExecutor(String name, boolean throwOnCrashReport) {
+        super(name, throwOnCrashReport);
     }
 
     @Override

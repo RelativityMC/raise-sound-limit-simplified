@@ -25,7 +25,6 @@ import java.util.Set;
 @Mixin(SoundManager.class)
 public abstract class MixinSoundManager1_21_6 {
 
-    private static final Set<Identifier> rsls$unknownSounds = Sets.newConcurrentHashSet();
 
     @Shadow @Final
     private SoundSystem soundSystem;
@@ -35,47 +34,5 @@ public abstract class MixinSoundManager1_21_6 {
     @Shadow
     @Final
     private static Logger LOGGER;
-
-    @Inject(method = "play(Lnet/minecraft/client/sound/SoundInstance;)Lnet/minecraft/client/sound/SoundSystem$PlayResult;", at = @At("HEAD"), cancellable = true)
-    private void onPlay(SoundInstance sound, CallbackInfoReturnable<SoundSystem.PlayResult> cir) {
-        if (((SoundManagerDuck) this).rsls$shouldRunOffthread()) {
-//            if (!this.soundSystem.started) {
-//                cir.setReturnValue(SoundSystem.PlayResult.NOT_STARTED);
-//                return;
-//            } else
-            if (!sound.canPlay()) {
-                cir.setReturnValue(SoundSystem.PlayResult.NOT_STARTED);
-                return;
-            }
-
-            WeightedSoundSet soundSet = sound.getSoundSet((SoundManager) (Object) this);
-            Identifier identifier = sound.getId();
-            if (soundSet == null) {
-                if (rsls$unknownSounds.add(identifier)) {
-                    LOGGER.warn("Unable to play unknown soundEvent:  {}", identifier);
-                }
-                cir.setReturnValue(SoundSystem.PlayResult.NOT_STARTED);
-                return;
-            }
-
-            Sound sound2 = sound.getSound();
-            if (sound2 == SoundManager.INTENTIONALLY_EMPTY_SOUND || sound2 == SoundManager.MISSING_SOUND) {
-                cir.setReturnValue(SoundSystem.PlayResult.NOT_STARTED);
-                return;
-            }
-
-            cir.setReturnValue(SoundSystem.PlayResult.STARTED); // we play sound asynchronously, STARTED is the only choice for now
-            ((SoundSystemDuck) this.soundSystem).rsls$schedulePlay(sound);
-            return;
-        }
-    }
-
-    @Inject(method = "pauseAllExcept", at = @At("HEAD"), cancellable = true)
-    private void onPauseAll(SoundCategory[] categories, CallbackInfo ci) {
-        if (((SoundManagerDuck) this).rsls$shouldRunOffthread()) {
-            ci.cancel();
-            ((ISoundSystem) this.soundSystem).getTaskQueue().execute(() -> this.pauseAllExcept(categories));
-        }
-    }
 
 }

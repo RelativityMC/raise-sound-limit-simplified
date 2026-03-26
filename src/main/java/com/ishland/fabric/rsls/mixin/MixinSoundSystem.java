@@ -1,12 +1,13 @@
 package com.ishland.fabric.rsls.mixin;
 
-import com.ishland.fabric.rsls.common.HashSetList;
+import com.ishland.fabric.rsls.common.ListFromSortedSet;
 import com.ishland.fabric.rsls.common.SoundSystemDuck;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalRef;
+import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.sound.Channel;
 import net.minecraft.client.sound.SoundExecutor;
@@ -23,13 +24,11 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
@@ -69,7 +68,7 @@ public abstract class MixinSoundSystem implements SoundSystemDuck {
     private void onInit(CallbackInfo ci) {
         this.soundEndTicks = Collections.synchronizedMap(this.soundEndTicks);
         this.sources = Collections.synchronizedMap(this.sources);
-        this.tickingSounds = new HashSetList<>(this.tickingSounds);
+        this.tickingSounds = new ListFromSortedSet<>(new ObjectLinkedOpenHashSet<>(this.tickingSounds));
         this.rsls$droppedSoundsPerf = new AtomicLong();
         this.rsls$pendingSounds = Collections.synchronizedSet(new HashSet<>());
     }

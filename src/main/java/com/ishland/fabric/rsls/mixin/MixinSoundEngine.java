@@ -17,17 +17,15 @@ import org.spongepowered.asm.mixin.injection.Slice;
 @Mixin(SoundEngine.class)
 public class MixinSoundEngine {
 
-    @Dynamic
-    @WrapOperation(method = {"init", "method_19661"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/client/sound/SoundEngine;getMonoSourceCount()I"))
+    @WrapOperation(method = {"init"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/client/sound/SoundEngine;getMonoSourceCount()I"))
     private int modifyMaxSourceFromConfig(SoundEngine instance, Operation<Integer> operation, @Share("rsls$actualSourcesCount") LocalIntRef actualSourcesCount) {
         final int min = Math.min(operation.call(instance), RSLSConfig.maxSourcesCount);
         actualSourcesCount.set(min);
         return min;
     }
 
-    @Dynamic
     @ModifyArg(
-            method = {"init", "method_19661"},
+            method = {"init"},
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/sound/SoundEngine$SourceSetImpl;<init>(I)V", ordinal = 0),
             slice = @Slice(
                     from = @At(value = "INVOKE", target = "Lnet/minecraft/client/sound/SoundEngine;getMonoSourceCount()I")
@@ -39,9 +37,8 @@ public class MixinSoundEngine {
         return min;
     }
 
-    @Dynamic
     @ModifyArg(
-            method = {"init", "method_19661"},
+            method = {"init"},
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/sound/SoundEngine$SourceSetImpl;<init>(I)V", ordinal = 1),
             slice = @Slice(
                     from = @At(value = "INVOKE", target = "Lnet/minecraft/client/sound/SoundEngine;getMonoSourceCount()I")
@@ -52,8 +49,7 @@ public class MixinSoundEngine {
     }
 
 
-    @Dynamic
-    @ModifyConstant(method = {"init", "method_19661"}, constant = @Constant(intValue = 255))
+    @ModifyConstant(method = {"init"}, constant = @Constant(intValue = 255))
     private int modifyMaxSource(int constant) {
         if (constant == 255) {
             return Integer.MAX_VALUE;
