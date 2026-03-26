@@ -51,6 +51,10 @@ public class RSLSMixinPlugin implements IMixinConfigPlugin {
             return PRE_1_20_3;
         if (mixinClassName.equals("com.ishland.fabric.rsls.mixin.MixinBiomeEffectSoundPlayer"))
             return !PRE_1_19;
+        if (mixinClassName.equals("com.ishland.fabric.rsls.mixin.MixinWorld"))
+            return !PRE_1_19;
+        if (mixinClassName.equals("com.ishland.fabric.rsls.mixin.MixinAbstractSoundInstance"))
+            return !PRE_1_19;
         if (mixinClassName.equals("com.ishland.fabric.rsls.mixin.versions.sndmgr.patch_0.MixinSoundManager1_21_5"))
             return !POST_1_21_5;
         if (mixinClassName.equals("com.ishland.fabric.rsls.mixin.versions.sndmgr.patch_0.MixinSoundManager1_21_6"))
