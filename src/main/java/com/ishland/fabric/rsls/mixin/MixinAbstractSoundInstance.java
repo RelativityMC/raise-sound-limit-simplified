@@ -15,7 +15,7 @@ public class MixinAbstractSoundInstance {
     @Shadow
     protected Random random;
 
-    @Inject(method = "<init>(Lnet/minecraft/util/Identifier;Lnet/minecraft/sound/SoundCategory;Lnet/minecraft/util/math/random/Random;)V", at = @At("RETURN"))
+    @Inject(method = "<init>*", at = @At("RETURN"), remap = false)
     private void onInit(CallbackInfo ci) {
         if (WorldRandomHolder.isWorldRandom(this.random)) {
             this.random = Random.create();
