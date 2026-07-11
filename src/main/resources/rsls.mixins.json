@@ -24,9 +24,7 @@
     "MixinSoundManager",
     "MixinSoundSystem",
     "access.ISoundSystem",
-    "cloth_config.MixinSoundOptionsScreen",
-    "versions.MixinSoundSystem1_21_6",
-    "versions.sndmgr.patch_0.MixinSoundManager1_21_6"
+    "cloth_config.MixinSoundOptionsScreen"
   ],
   "plugin": "com.ishland.fabric.rsls.mixin.RSLSMixinPlugin"
 }

@@ -36,7 +36,7 @@ public class RSLSMod implements ClientModInitializer {
             } catch (Throwable t) {
                 t.printStackTrace();
             }
-        }, 0, 20L, TimeUnit.MILLISECONDS);
+        }, 0, 50L, TimeUnit.MILLISECONDS);
     }
 
     @Override
