@@ -1,5 +1,3 @@
-/*
-
 package com.ishland.fabric.rsls.common.cloth_config;
 
 import com.ishland.fabric.rsls.common.RSLSConfig;
@@ -59,5 +57,3 @@ public class ConfigScreenUtils {
     }
 
 }
-
- */
