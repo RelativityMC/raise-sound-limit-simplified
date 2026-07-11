@@ -157,41 +157,6 @@ public class ListFromSortedSet<T> implements List<T> {
     }
 
     @Override
-    public void addFirst(T t) {
-        this.delegate.addFirst(t);
-    }
-
-    @Override
-    public void addLast(T t) {
-        this.delegate.addLast(t);
-    }
-
-    @Override
-    public T getFirst() {
-        return this.delegate.getFirst();
-    }
-
-    @Override
-    public T getLast() {
-        return this.delegate.getLast();
-    }
-
-    @Override
-    public T removeFirst() {
-        return this.delegate.removeFirst();
-    }
-
-    @Override
-    public T removeLast() {
-        return this.delegate.removeLast();
-    }
-
-    @Override
-    public List<T> reversed() {
-        return new ListFromSortedSet<>(this.delegate.reversed());
-    }
-
-    @Override
     public <T1> T1[] toArray(@NotNull IntFunction<T1[]> generator) {
         return this.delegate.toArray(generator);
     }
