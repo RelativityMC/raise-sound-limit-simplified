@@ -15,13 +15,11 @@ authors="RelativityMC, ishland"
 description='''A mod that raises Minecraft sound sources limit in a simple way '''
 displayURL = "https://github.com/RelativityMC/raise-sound-limit-simplified"
 
-[[mixins]]
-config="rsls.mixins.json"
-
 [[dependencies.rsls]]
 modId = "minecraft"
 type = "required"
-versionRange = "[26.1,)"
+versionRange = "1.20.1"
 ordering = "NONE"
 side = "BOTH"
+mandatory = true
 

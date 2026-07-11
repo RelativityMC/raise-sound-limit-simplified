@@ -1,7 +1,7 @@
 package com.ishland.fabric.rsls.common;
 
 import net.minecraft.util.math.MathHelper;
-import net.neoforged.fml.loading.FMLPaths;
+import net.minecraftforge.fml.loading.FMLPaths;
 
 import java.io.IOException;
 import java.io.InputStream;

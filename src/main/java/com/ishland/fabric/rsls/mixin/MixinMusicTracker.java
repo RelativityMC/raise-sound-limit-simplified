@@ -43,18 +43,4 @@ public class MixinMusicTracker {
         this.rsls$playFuture = CompletableFuture.runAsync(() -> original.call(instance), taskQueue).orTimeout(15, TimeUnit.SECONDS);
     }
 
-    @WrapOperation(method = {"play"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/client/toast/ToastManager;onMusicTrackStart()V"))
-    private void wrapPlayListener(ToastManager instance, Operation<Void> original) {
-        this.client.execute(() -> original.call(instance));
-    }
-
-    @WrapMethod(method = "tryShowToast")
-    private void wrapTryShowToast(Operation<Void> original) {
-        if (this.client.isOnThread()) {
-            original.call();
-        } else {
-            this.client.execute(original::call);
-        }
-    }
-
 }

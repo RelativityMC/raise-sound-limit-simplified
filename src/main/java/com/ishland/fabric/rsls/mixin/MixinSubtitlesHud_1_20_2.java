@@ -12,17 +12,17 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(SubtitlesHud.class)
-public abstract class MixinSubtitlesHud_1_20_3 {
+public abstract class MixinSubtitlesHud_1_20_2 {
 
     @Shadow @Final private MinecraftClient client;
 
-    @Shadow public abstract void onSoundPlayed(SoundInstance sound, WeightedSoundSet soundSet, float range);
+    @Shadow public abstract void onSoundPlayed(SoundInstance sound, WeightedSoundSet soundSet);
 
     @Inject(method = "onSoundPlayed", at = @At("HEAD"), cancellable = true)
-    private void onSoundPlayedHandler(SoundInstance sound, WeightedSoundSet soundSet, float range, CallbackInfo ci) {
+    private void onSoundPlayedHandler(SoundInstance sound, WeightedSoundSet soundSet, CallbackInfo ci) {
         if (!this.client.isOnThread()) {
             ci.cancel();
-            this.client.execute(() -> this.onSoundPlayed(sound, soundSet, range));
+            this.client.execute(() -> this.onSoundPlayed(sound, soundSet));
         }
     }
 

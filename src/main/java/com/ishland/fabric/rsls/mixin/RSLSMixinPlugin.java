@@ -2,8 +2,6 @@ package com.ishland.fabric.rsls.mixin;
 
 import com.ishland.fabric.rsls.common.EarlyMultiVersionUtil;
 import com.llamalad7.mixinextras.MixinExtrasBootstrap;
-import net.neoforged.fml.loading.FMLLoader;
-import net.neoforged.fml.loading.moddiscovery.ModInfo;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
@@ -12,15 +10,6 @@ import java.util.List;
 import java.util.Set;
 
 public class RSLSMixinPlugin implements IMixinConfigPlugin {
-
-    private static final boolean POST_1_21_5;
-    private static final boolean POST_1_21_8;
-
-    static {
-        ModInfo minecraft = EarlyMultiVersionUtil.loadingModList.getMods().stream().filter(modInfo -> modInfo.getModId().equals("minecraft")).findFirst().get();
-        POST_1_21_5 = minecraft.getVersion().getMajorVersion() >= 1 && minecraft.getVersion().getMinorVersion() >= 21 && minecraft.getVersion().getIncrementalVersion() > 5;
-        POST_1_21_8 = minecraft.getVersion().getMajorVersion() >= 1 && minecraft.getVersion().getMinorVersion() >= 21 && minecraft.getVersion().getIncrementalVersion() > 8;
-    }
 
     @Override
     public void onLoad(String mixinPackage) {

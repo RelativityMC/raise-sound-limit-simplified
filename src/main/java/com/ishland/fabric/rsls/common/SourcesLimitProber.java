@@ -1,6 +1,6 @@
 package com.ishland.fabric.rsls.common;
 
-import com.ishland.fabric.rsls.RSLSInjectorFFM;
+import com.ishland.fabric.rsls.RSLSInjectorLWJGL;
 import org.lwjgl.openal.ALC10;
 import org.lwjgl.openal.ALC11;
 import org.lwjgl.system.MemoryStack;
@@ -10,7 +10,7 @@ import java.nio.IntBuffer;
 public class SourcesLimitProber {
 
     public static int probeSourcesLimit() {
-        RSLSInjectorFFM.init();
+        RSLSInjectorLWJGL.init();
         final long device = ALC10.alcOpenDevice((String) null);
         checkALCError(device, "Open device");
         final long context = ALC10.alcCreateContext(device, (IntBuffer) null);

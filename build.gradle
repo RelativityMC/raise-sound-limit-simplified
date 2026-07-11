@@ -5,8 +5,8 @@ plugins {
 }
 
 java {
-	sourceCompatibility = JavaVersion.VERSION_25
-	targetCompatibility = JavaVersion.VERSION_25
+	sourceCompatibility = JavaVersion.VERSION_17
+	targetCompatibility = JavaVersion.VERSION_17
 }
 
 base {
@@ -30,18 +30,23 @@ repositories {
 	}
 	maven { url = "https://maven.shedaniel.me/" }
 	maven { url = "https://maven.neoforged.net/releases/" }
+	maven {
+		url = "https://maven.minecraftforge.net/"
+	}
 }
 
 dependencies {
 	// To change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	mappings loom.layered {
-		it.mappings("org.relativitymc:modern-yarn:$project.yarn_mappings:v2")
-		it.mappings("org.relativitymc:modern-yarn-mappings-patch-neoforge:$project.yarn_mappings_patch_neoforge_version")
+		it.mappings("net.fabricmc:yarn:$project.yarn_mappings:v2")
 	}
-	forgeUserdev "net.neoforged:neoforge:${project.forge_version}:userdev"
+	forgeUserdev "net.minecraftforge:forge:${project.forge_version}:userdev"
 
-    modCompileOnly "me.shedaniel.cloth:cloth-config-neoforge:26.1.154"
+	compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:0.5.4"))
+	implementation(include("io.github.llamalad7:mixinextras-forge:0.5.4"))
+
+    modCompileOnly "me.shedaniel.cloth:cloth-config-forge:11.1.136"
 
 	testImplementation 'org.junit.jupiter:junit-jupiter:5.13.4'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
@@ -60,8 +65,7 @@ test {
 loom {
 	accessWidenerPath = file("src/main/resources/rsls.accesswidener")
 
-		useIntermediateMappings = true
-	intermediaryUrl = 'https://repo.codemc.io/repository/relativitymc/org/relativitymc/intermediary/%1$s/intermediary-%1$s-v2.jar'
+	forgeExtraMixinConfigs.add("rsls.mixins.json")
 }
 
 remapJar {
@@ -72,7 +76,7 @@ remapJar {
 processResources {
 	inputs.property "version", project.version
 
-	filesMatching("META-INF/neoforge.mods.toml") {
+	filesMatching("META-INF/mods.toml") {
 		expand "version": project.version
 	}
 }
@@ -132,15 +136,15 @@ if (ghaChangelog == null) {
 
 publishMods {
 	changelog = ghaChangelog
-	modLoaders.add("neoforge")
+	modLoaders.add("forge")
 
 	def envDisplayName = System.getenv("OVERRIDE_DISPLAY_NAME")
-	displayName = envDisplayName != null ? envDisplayName : (project.version + " devbuild for neoforge " + project.minecraft_version)
+	displayName = envDisplayName != null ? envDisplayName : (project.version + " devbuild for forge " + project.minecraft_version)
 
 	def envType = System.getenv("OVERRIDE_RELEASE_TYPE")
 	type = envType != null ? me.modmuss50.mpp.ReleaseType.valueOf(envType) : me.modmuss50.mpp.ReleaseType.ALPHA
 
-	it.version = project.version + "+neoforge"
+	it.version = project.version + "+forge"
 
 	dryRun = providers.environmentVariable("PUBLISH_DRY_RUN").getOrNull() == "YES_DRYRUN"
 

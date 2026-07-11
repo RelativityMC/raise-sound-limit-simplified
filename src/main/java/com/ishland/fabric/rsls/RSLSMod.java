@@ -8,7 +8,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.sound.Channel;
 import net.minecraft.client.sound.SoundManager;
 import net.minecraft.client.sound.SoundSystem;
-import net.neoforged.fml.common.Mod;
+import net.minecraftforge.fml.common.Mod;
 import org.spongepowered.asm.mixin.MixinEnvironment;
 
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -42,6 +42,6 @@ public class RSLSMod {
 
     {
         RSLSConfig.init();
-        RSLSInjectorFFM.init();
+        RSLSInjectorLWJGL.init();
     }
 }

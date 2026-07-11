@@ -66,6 +66,15 @@ public abstract class MixinSoundManager implements SoundManagerDuck {
         }
     }
 
+    @WrapMethod(method = "play(Lnet/minecraft/client/sound/SoundInstance;)V")
+    private void onPlay(SoundInstance sound, Operation<Void> original) {
+        if (rsls$shouldRunOffthread()) {
+            ((ISoundSystem) this.soundSystem).getTaskQueue().execute(() -> original.call(sound));
+        } else {
+            original.call(sound);
+        }
+    }
+
     @WrapMethod(method = "play(Lnet/minecraft/client/sound/SoundInstance;I)V")
     private void onPlay(SoundInstance sound, int delay, Operation<Void> original) {
         if (rsls$shouldRunOffthread()) {
@@ -75,48 +84,14 @@ public abstract class MixinSoundManager implements SoundManagerDuck {
         }
     }
 
-    @Inject(method = "play(Lnet/minecraft/client/sound/SoundInstance;)Lnet/minecraft/client/sound/SoundSystem$PlayResult;", at = @At("HEAD"), cancellable = true)
-    private void onPlay(SoundInstance sound, CallbackInfoReturnable<SoundSystem.PlayResult> cir) {
-        if (this.rsls$shouldRunOffthread()) {
-//            if (!this.soundSystem.started) {
-//                cir.setReturnValue(SoundSystem.PlayResult.NOT_STARTED);
-//                return;
-//            } else
-            if (!sound.canPlay()) {
-                cir.setReturnValue(SoundSystem.PlayResult.NOT_STARTED);
-                return;
-            }
-
-            WeightedSoundSet soundSet = sound.getSoundSet((SoundManager) (Object) this);
-            Identifier identifier = sound.getId();
-            if (soundSet == null) {
-                if (rsls$unknownSounds.add(identifier)) {
-                    LOGGER.warn("Unable to play unknown soundEvent:  {}", identifier);
-                }
-                cir.setReturnValue(SoundSystem.PlayResult.NOT_STARTED);
-                return;
-            }
-
-            Sound sound2 = sound.getSound();
-            if (sound2 == SoundManager.INTENTIONALLY_EMPTY_SOUND || sound2 == SoundManager.MISSING_SOUND) {
-                cir.setReturnValue(SoundSystem.PlayResult.NOT_STARTED);
-                return;
-            }
-
-            cir.setReturnValue(SoundSystem.PlayResult.STARTED); // we play sound asynchronously, STARTED is the only choice for now
-            ((SoundSystemDuck) this.soundSystem).rsls$schedulePlay(sound);
-            return;
-        }
-    }
-
     // updateListenerPosition not needed
 
-    @WrapMethod(method = "pauseAllExcept")
-    private void onPauseAll(SoundCategory[] categories, Operation<Void> original) {
-        if (((SoundManagerDuck) this).rsls$shouldRunOffthread()) {
-            ((ISoundSystem) this.soundSystem).getTaskQueue().execute(() -> original.call((Object) categories));
+    @WrapMethod(method = "pauseAll")
+    private void onPauseAll(Operation<Void> original) {
+        if (this.rsls$shouldRunOffthread()) {
+            ((ISoundSystem) this.soundSystem).getTaskQueue().execute(() -> original.call());
         } else {
-            original.call((Object) categories);
+            original.call();
         }
     }
 
@@ -130,8 +105,6 @@ public abstract class MixinSoundManager implements SoundManagerDuck {
             original.call();
         }
     }
-
-    // stopAbruptly debatable
 
     @WrapMethod(method = "tick")
     private void onTick(boolean paused, Operation<Void> original) {
@@ -151,12 +124,12 @@ public abstract class MixinSoundManager implements SoundManagerDuck {
         }
     }
 
-    @WrapMethod(method = "refreshSoundVolumes")
-    private void onUpdateSoundVolume(SoundCategory category, Operation<Void> original) {
+    @WrapMethod(method = "updateSoundVolume")
+    private void onUpdateSoundVolume(SoundCategory category, float volume, Operation<Void> original) {
         if (this.rsls$shouldRunOffthread()) {
-            ((ISoundSystem) this.soundSystem).getTaskQueue().execute(() -> original.call(category));
+            ((ISoundSystem) this.soundSystem).getTaskQueue().execute(() -> original.call(category, volume));
         } else {
-            original.call(category);
+            original.call(category, volume);
         }
     }
 
@@ -166,15 +139,6 @@ public abstract class MixinSoundManager implements SoundManagerDuck {
             ((ISoundSystem) this.soundSystem).getTaskQueue().execute(() -> original.call(sound));
         } else {
             original.call(sound);
-        }
-    }
-
-    @WrapMethod(method = "setVolume")
-    private void onSetVolume(SoundCategory category, float volume, Operation<Void> original) {
-        if (this.rsls$shouldRunOffthread()) {
-            ((ISoundSystem) this.soundSystem).getTaskQueue().execute(() -> original.call(category, volume));
-        } else {
-            original.call(category, volume);
         }
     }
 

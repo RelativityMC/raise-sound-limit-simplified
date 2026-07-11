@@ -1,7 +1,7 @@
 package com.ishland.fabric.rsls.common;
 
-import net.neoforged.fml.loading.FMLLoader;
-import net.neoforged.fml.loading.LoadingModList;
+import net.minecraftforge.fml.loading.FMLLoader;
+import net.minecraftforge.fml.loading.LoadingModList;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -15,7 +15,7 @@ public class EarlyMultiVersionUtil {
 
     private static LoadingModList getLoadingModList0() {
         try {
-            return FMLLoader.getCurrent().getLoadingModList();
+            return FMLLoader.getLoadingModList();
         } catch (NoSuchMethodError e1) {
             try {
                 return (LoadingModList) FMLLoader.class.getMethod("getLoadingModList").invoke(null);

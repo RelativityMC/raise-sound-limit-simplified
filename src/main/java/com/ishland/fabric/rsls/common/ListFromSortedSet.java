@@ -1,8 +1,7 @@
 package com.ishland.fabric.rsls.common;
 
 import com.google.common.collect.Iterators;
-import org.jspecify.annotations.NonNull;
-import org.jspecify.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.Comparator;
@@ -43,17 +42,17 @@ public class ListFromSortedSet<T> implements List<T> {
     }
 
     @Override
-    public @NonNull Iterator<T> iterator() {
+    public @NotNull Iterator<T> iterator() {
         return this.delegate.iterator();
     }
 
     @Override
-    public @NonNull Object[] toArray() {
+    public @NotNull Object[] toArray() {
         return this.delegate.toArray();
     }
 
     @Override
-    public @NonNull <T1> T1[] toArray(@NonNull T1[] a) {
+    public @NotNull <T1> T1[] toArray(@NotNull T1[] a) {
         return this.delegate.toArray(a);
     }
 
@@ -68,27 +67,27 @@ public class ListFromSortedSet<T> implements List<T> {
     }
 
     @Override
-    public boolean containsAll(@NonNull Collection<?> c) {
+    public boolean containsAll(@NotNull Collection<?> c) {
         return this.delegate.containsAll(c);
     }
 
     @Override
-    public boolean addAll(@NonNull Collection<? extends T> c) {
+    public boolean addAll(@NotNull Collection<? extends T> c) {
         return this.delegate.addAll(c);
     }
 
     @Override
-    public boolean addAll(int index, @NonNull Collection<? extends T> c) {
+    public boolean addAll(int index, @NotNull Collection<? extends T> c) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public boolean removeAll(@NonNull Collection<?> c) {
+    public boolean removeAll(@NotNull Collection<?> c) {
         return this.delegate.removeAll(c);
     }
 
     @Override
-    public boolean retainAll(@NonNull Collection<?> c) {
+    public boolean retainAll(@NotNull Collection<?> c) {
         return this.delegate.retainAll(c);
     }
 
@@ -128,32 +127,32 @@ public class ListFromSortedSet<T> implements List<T> {
     }
 
     @Override
-    public @NonNull ListIterator<T> listIterator() {
+    public @NotNull ListIterator<T> listIterator() {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public @NonNull ListIterator<T> listIterator(int index) {
+    public @NotNull ListIterator<T> listIterator(int index) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public @NonNull List<T> subList(int fromIndex, int toIndex) {
+    public @NotNull List<T> subList(int fromIndex, int toIndex) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void replaceAll(@NonNull UnaryOperator<T> operator) {
+    public void replaceAll(@NotNull UnaryOperator<T> operator) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void sort(@Nullable Comparator<? super T> c) {
+    public void sort(Comparator<? super T> c) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public @NonNull Spliterator<T> spliterator() {
+    public @NotNull Spliterator<T> spliterator() {
         return this.delegate.spliterator();
     }
 
@@ -193,22 +192,22 @@ public class ListFromSortedSet<T> implements List<T> {
     }
 
     @Override
-    public <T1> T1[] toArray(@NonNull IntFunction<T1[]> generator) {
+    public <T1> T1[] toArray(@NotNull IntFunction<T1[]> generator) {
         return this.delegate.toArray(generator);
     }
 
     @Override
-    public boolean removeIf(@NonNull Predicate<? super T> filter) {
+    public boolean removeIf(@NotNull Predicate<? super T> filter) {
         return this.delegate.removeIf(filter);
     }
 
     @Override
-    public @NonNull Stream<T> stream() {
+    public @NotNull Stream<T> stream() {
         return this.delegate.stream();
     }
 
     @Override
-    public @NonNull Stream<T> parallelStream() {
+    public @NotNull Stream<T> parallelStream() {
         return this.delegate.parallelStream();
     }
 
