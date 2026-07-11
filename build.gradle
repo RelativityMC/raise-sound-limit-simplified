@@ -158,7 +158,7 @@ publishMods {
 		curseforge("curseforgePackage") {
 			from cfOptions
 			file = remapJar.archiveFile
-			projectId = "1055925"
+			projectId = "646146"
 		}
 	}
 
@@ -172,7 +172,7 @@ publishMods {
 		modrinth("modrinthPackage") {
 			from mrOptions
 			file = remapJar.archiveFile
-			projectId = "Ps1zyz6x"
+			projectId = "SKW62Pht"
 		}
 	}
 }
