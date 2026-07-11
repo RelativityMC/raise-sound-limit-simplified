@@ -17,7 +17,7 @@ on:
         options:
           - ALPHA
           - BETA
-          - RELEASE
+          - STABLE
       dry_run:
         required: true
         type: choice
