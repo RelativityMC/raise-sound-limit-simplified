@@ -1,12 +1,13 @@
 package com.ishland.fabric.rsls.mixin;
 
-import com.ishland.fabric.rsls.common.HashSetList;
+import com.ishland.fabric.rsls.common.ListFromSortedSet;
 import com.ishland.fabric.rsls.common.SoundSystemDuck;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalRef;
+import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.sound.Channel;
 import net.minecraft.client.sound.SoundExecutor;
@@ -24,13 +25,11 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
@@ -53,6 +52,8 @@ public abstract class MixinSoundSystem implements SoundSystemDuck {
 
     @Shadow public abstract void play(SoundInstance sound, int delay);
 
+    @Shadow public abstract SoundSystem.PlayResult play(SoundInstance sound);
+
     @Shadow @Final private SoundExecutor taskQueue;
 
     @Shadow private boolean started;
@@ -70,18 +71,12 @@ public abstract class MixinSoundSystem implements SoundSystemDuck {
     private void onInit(CallbackInfo ci) {
         this.soundEndTicks = Collections.synchronizedMap(this.soundEndTicks);
         this.sources = Collections.synchronizedMap(this.sources);
-        this.tickingSounds = new HashSetList<>(this.tickingSounds);
+        this.tickingSounds = new ListFromSortedSet<>(new ObjectLinkedOpenHashSet<>(this.tickingSounds));
         this.rsls$droppedSoundsPerf = new AtomicLong();
         this.rsls$pendingSounds = Collections.synchronizedSet(new HashSet<>());
     }
 
-    @Redirect(method = "tick(Z)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/sound/Channel;tick()V"))
-    private void dontTickChannel(Channel instance) {
-        // no-op
-    }
-
-    @Dynamic
-    @Redirect(method = {"tick()V", "tickNonPaused()V"}, at = @At(value = "INVOKE", target = "Ljava/util/List;stream()Ljava/util/stream/Stream;"))
+    @Redirect(method = "tick()V", at = @At(value = "INVOKE", target = "Ljava/util/List;stream()Ljava/util/stream/Stream;"))
     private Stream<?> optimizeNextTickIteration(List<?> instance) {
         if (instance == this.soundsToPlayNextTick) {
             for (TickableSoundInstance soundInstance : this.soundsToPlayNextTick) {
@@ -126,14 +121,14 @@ public abstract class MixinSoundSystem implements SoundSystemDuck {
     }
 
     @Dynamic
-    @Redirect(method = {"tick()V", "tickNonPaused()V"}, at = @At(value = "INVOKE", target = "Ljava/util/stream/Stream;filter(Ljava/util/function/Predicate;)Ljava/util/stream/Stream;"))
+    @Redirect(method = {"tick()V"}, at = @At(value = "INVOKE", target = "Ljava/util/stream/Stream;filter(Ljava/util/function/Predicate;)Ljava/util/stream/Stream;"))
     private <T> Stream<T> tickDisableFilter(Stream<T> instance, Predicate<? super T> predicate) {
         if (instance == null) return null;
         return instance.filter(predicate);
     }
 
     @Dynamic
-    @Redirect(method = {"tick()V", "tickNonPaused()V"}, at = @At(value = "INVOKE", target = "Ljava/util/stream/Stream;forEach(Ljava/util/function/Consumer;)V"))
+    @Redirect(method = {"tick()V"}, at = @At(value = "INVOKE", target = "Ljava/util/stream/Stream;forEach(Ljava/util/function/Consumer;)V"))
     private <T> void tickDisableForEach(Stream<T> instance, Consumer<? super T> consumer) {
         if (instance == null) return;
         instance.forEach(consumer);
@@ -145,7 +140,7 @@ public abstract class MixinSoundSystem implements SoundSystemDuck {
     }
 
     @Dynamic
-    @WrapMethod(method = {"tick()V", "tickNonPaused()V"})
+    @WrapMethod(method = {"tick()V"})
     private void wrapTick(Operation<Void> original, @Share("rsls$pendingTicks") LocalRef<List<TickableSoundInstance>> rsls$pendingTicks) {
         ArrayList<TickableSoundInstance> list = this.rsls$cachedTickableSoundInstanceList;
         if (list == null) {
@@ -171,9 +166,20 @@ public abstract class MixinSoundSystem implements SoundSystemDuck {
     }
 
     @Dynamic
-    @Redirect(method = {"tick()V", "tickNonPaused()V"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/client/sound/TickableSoundInstance;tick()V"))
+    @Redirect(method = {"tick()V"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/client/sound/TickableSoundInstance;tick()V"))
     private void redirectTickSound(TickableSoundInstance instance, @Share("rsls$pendingTicks") LocalRef<List<TickableSoundInstance>> rsls$pendingTicks) {
         rsls$pendingTicks.get().add(instance);
+    }
+
+    @Override
+    public void rsls$playInternal0(SoundInstance instance) {
+        this.play(instance);
+    }
+
+    @Redirect(method = "tick()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/sound/SoundSystem;play(Lnet/minecraft/client/sound/SoundInstance;)Lnet/minecraft/client/sound/SoundSystem$PlayResult;"))
+    private SoundSystem.PlayResult redirectDelayedPlay(SoundSystem instance, SoundInstance sound) {
+        this.rsls$schedulePlay(sound);
+        return SoundSystem.PlayResult.STARTED; // return value is unused
     }
 
 }

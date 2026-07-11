@@ -38,21 +38,10 @@ public class ConfigScreenUtils {
     }
 
     public static ButtonWidget getConfigButton(Screen screen) {
-        ButtonWidget widget = null;
-        try {
-            widget = ButtonWidget.builder(Text.of("RSLS Config"), button -> {
-                MinecraftClient.getInstance().setScreen(makeConfigScreen(screen));
-            }).dimensions(screen.width - 90, 8, 80, 20).build();
-        } catch (NoSuchMethodError e) {
-            try {
-                final Constructor<ButtonWidget> constructor = ButtonWidget.class.getConstructor(int.class, int.class, int.class, int.class, Text.class, ButtonWidget.PressAction.class);
-                widget = constructor.newInstance(screen.width - 90, 8, 80, 20, Text.of("RSLS Config"), (ButtonWidget.PressAction) button -> {
-                    MinecraftClient.getInstance().setScreen(makeConfigScreen(screen));
-                });
-            } catch (Throwable t) {
-                LogManager.getLogger("RSLS").error("Failed to inject RSLS config button", t);
-            }
-        }
+        ButtonWidget widget;
+        widget = ButtonWidget.builder(Text.of("RSLS Config"), button -> {
+            MinecraftClient.getInstance().setScreen(makeConfigScreen(screen));
+        }).dimensions(screen.width - 90, 8, 80, 20).build();
         return widget;
     }
 

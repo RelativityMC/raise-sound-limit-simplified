@@ -37,11 +37,11 @@ public class RSLSMod {
             } catch (Throwable t) {
                 t.printStackTrace();
             }
-        }, 0, 20L, TimeUnit.MILLISECONDS);
+        }, 0, 50L, TimeUnit.MILLISECONDS);
     }
 
     {
         RSLSConfig.init();
-        RSLSInjectorLWJGL.init();
+        RSLSInjectorFFM.init();
     }
 }

@@ -15,7 +15,7 @@ public class MixinWorld {
 
     @Shadow
     @Final
-    public Random random;
+    protected Random random;
 
     @Inject(method = "<init>", at = @At("RETURN"), remap = false)
     private void captureWorldRandom(CallbackInfo ci) {

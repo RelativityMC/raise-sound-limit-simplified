@@ -21,7 +21,7 @@ config="rsls.mixins.json"
 [[dependencies.rsls]]
 modId = "minecraft"
 type = "required"
-versionRange = "[1.21,2.0)"
+versionRange = "[26.1,)"
 ordering = "NONE"
 side = "BOTH"
 
