@@ -2,9 +2,12 @@ package com.ishland.fabric.rsls.mixin;
 
 import com.ishland.fabric.rsls.common.ListFromSortedSet;
 import com.ishland.fabric.rsls.common.SoundSystemDuck;
+import com.ishland.fabric.rsls.mixin.access.IThreadExecutor;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
@@ -175,6 +178,16 @@ public abstract class MixinSoundSystem implements SoundSystemDuck {
     private SoundSystem.PlayResult redirectDelayedPlay(SoundSystem instance, SoundInstance sound) {
         this.rsls$schedulePlay(sound);
         return SoundSystem.PlayResult.STARTED; // return value is unused
+    }
+
+    @Redirect(method = "stopAll", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/sound/SoundExecutor;stop()V"))
+    private void redirectExecutorStop(SoundExecutor instance) {
+        ((IThreadExecutor<Runnable>) this.taskQueue).invokeCancelTasks();
+    }
+
+    @Redirect(method = "stopAll", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/sound/SoundExecutor;restart()V"))
+    private void redirectExecutorStart(SoundExecutor instance) {
+        // no-op
     }
 
 }
