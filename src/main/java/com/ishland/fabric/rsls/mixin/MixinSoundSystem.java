@@ -2,6 +2,7 @@ package com.ishland.fabric.rsls.mixin;
 
 import com.ishland.fabric.rsls.common.HashSetList;
 import com.ishland.fabric.rsls.common.SoundSystemDuck;
+import com.ishland.fabric.rsls.mixin.access.IThreadExecutor;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
@@ -168,6 +169,12 @@ public abstract class MixinSoundSystem implements SoundSystemDuck {
     @Redirect(method = "tick()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/sound/TickableSoundInstance;tick()V"))
     private void redirectTickSound(TickableSoundInstance instance, @Share("rsls$pendingTicks") LocalRef<List<TickableSoundInstance>> rsls$pendingTicks) {
         rsls$pendingTicks.get().add(instance);
+    }
+
+    // named "restart" in older versions
+    @Redirect(method = "stopAll", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/sound/SoundExecutor;stop()V"))
+    private void redirectExecutorStop(SoundExecutor instance) {
+        ((IThreadExecutor<Runnable>) this.taskQueue).invokeCancelTasks();
     }
 
 }

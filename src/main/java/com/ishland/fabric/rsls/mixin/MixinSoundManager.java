@@ -3,6 +3,8 @@ package com.ishland.fabric.rsls.mixin;
 import com.ishland.fabric.rsls.common.SoundManagerDuck;
 import com.ishland.fabric.rsls.mixin.access.ISoundExecutor;
 import com.ishland.fabric.rsls.mixin.access.ISoundSystem;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.minecraft.client.sound.SoundExecutor;
 import net.minecraft.client.sound.SoundInstance;
 import net.minecraft.client.sound.SoundInstanceListener;
@@ -49,7 +51,7 @@ public abstract class MixinSoundManager implements SoundManagerDuck {
 
     @Shadow public abstract void stopSounds(@Nullable Identifier id, @Nullable SoundCategory soundCategory);
 
-    @Shadow public abstract void reloadSounds();
+    @Shadow public abstract void stopAll();
 
     @Inject(method = "<init>", at = @At("RETURN"), remap = false)
     private void onInit(CallbackInfo ci) {
@@ -74,13 +76,19 @@ public abstract class MixinSoundManager implements SoundManagerDuck {
 
     // updateListenerPosition not needed
 
-    // stopAll not needed
+    @Inject(method = "stopAll", at = @At("HEAD"), cancellable = true)
+    private void onStopAll(CallbackInfo ci) {
+        if (rsls$shouldRunOffthread()) {
+            ci.cancel();
+            ((ISoundSystem) this.soundSystem).getTaskQueue().execute(this::stopAll);
+        }
+    }
 
     @Inject(method = "close", at = @At("HEAD"), cancellable = true)
     private void onClose(CallbackInfo ci) {
         if (rsls$shouldRunOffthread()) {
             ci.cancel();
-            ((ISoundSystem) this.soundSystem).getTaskQueue().execute(this::close);
+            ((ISoundSystem) this.soundSystem).getTaskQueue().submitAndJoin(this::close);
         }
     }
 
@@ -123,6 +131,15 @@ public abstract class MixinSoundManager implements SoundManagerDuck {
         if (rsls$shouldRunOffthread()) {
             ci.cancel();
             ((ISoundSystem) this.soundSystem).getTaskQueue().execute(() -> this.stopSounds(id, soundCategory));
+        }
+    }
+
+    @WrapOperation(method = "apply(Lnet/minecraft/client/sound/SoundManager$SoundList;Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/util/profiler/Profiler;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/sound/SoundSystem;reloadSounds()V"))
+    private void wrapResourceReloadReload(SoundSystem instance, Operation<Void> original) {
+        if (rsls$shouldRunOffthread()) {
+            ((ISoundSystem) this.soundSystem).getTaskQueue().submitAndJoin(() -> original.call(instance));
+        } else {
+            original.call(instance);
         }
     }
 

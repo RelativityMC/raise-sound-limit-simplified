@@ -3,6 +3,7 @@ package com.ishland.fabric.rsls.mixin.access;
 import net.minecraft.util.thread.ThreadExecutor;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
+import org.spongepowered.asm.mixin.gen.Invoker;
 
 import java.util.Queue;
 
@@ -14,5 +15,8 @@ public interface IThreadExecutor<R> {
 
     @Accessor
     int getExecutionsInProgress();
+
+    @Invoker
+    void invokeCancelTasks();
 
 }
