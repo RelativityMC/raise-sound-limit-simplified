@@ -1,5 +1,5 @@
 plugins {
-	id 'org.relativitymc.neo-loom-remap' version '1.17-SNAPSHOT'
+	id 'org.relativitymc.neo-loom-remap' version '1.18-SNAPSHOT'
 	id 'maven-publish'
 	id 'me.modmuss50.mod-publish-plugin' version "2.1.1"
 }
