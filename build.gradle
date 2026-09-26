@@ -1,6 +1,7 @@
 plugins {
 	id 'fabric-loom' version '1.18-SNAPSHOT'
 	id 'maven-publish'
+	id 'me.modmuss50.mod-publish-plugin' version "2.2.1"
 }
 
 java {
@@ -103,5 +104,65 @@ publishing {
 		// Notice: This block does NOT have the same function as the block in the top level.
 		// The repositories here will be used for publishing your artifact, not for
 		// retrieving dependencies.
+	}
+}
+
+def ghaChangelog = System.getenv("OVERRIDE_CHANGELOG")
+if (ghaChangelog == null) {
+	ghaChangelog = "No changelog provided"
+} else {
+	ghaChangelog = ghaChangelog.replace("\\n", "\n")
+}
+
+publishMods {
+	changelog = ghaChangelog
+	modLoaders.add("fabric")
+
+	def envDisplayName = System.getenv("OVERRIDE_DISPLAY_NAME")
+	displayName = envDisplayName != null ? envDisplayName : (project.version + " devbuild for fabric " + project.minecraft_version)
+
+	def envType = System.getenv("OVERRIDE_RELEASE_TYPE")
+	type = envType != null ? me.modmuss50.mpp.ReleaseType.valueOf(envType) : me.modmuss50.mpp.ReleaseType.ALPHA
+
+	it.version = project.version
+
+	dryRun = providers.environmentVariable("PUBLISH_DRY_RUN").getOrNull() == "YES_DRYRUN"
+
+	def cfOptions = curseforgeOptions {
+		accessToken = System.getenv("CURSEFORGE_TOKEN")
+		minecraftVersionRange {
+			start = "1.17.1"
+			end = "1.21.11"
+		}
+		client = true
+		server = true
+		changelogType = "markdown"
+		javaVersions.add(JavaVersion.VERSION_25)
+		javaVersions.add(JavaVersion.VERSION_22)
+		javaVersions.add(JavaVersion.VERSION_21)
+		javaVersions.add(JavaVersion.VERSION_20)
+		javaVersions.add(JavaVersion.VERSION_19)
+		javaVersions.add(JavaVersion.VERSION_18)
+		javaVersions.add(JavaVersion.VERSION_17)
+	}
+
+	curseforge("curseforgePackage") {
+		from cfOptions
+		file = remapJar.archiveFile
+		projectId = "646146"
+	}
+
+	def mrOptions = modrinthOptions {
+		accessToken = System.getenv("MODRINTH_TOKEN")
+		minecraftVersionRange {
+			start = "1.17.1"
+			end = "1.21.11"
+		}
+	}
+
+	modrinth("modrinthPackage") {
+		from mrOptions
+		file = remapJar.archiveFile
+		projectId = "SKW62Pht"
 	}
 }

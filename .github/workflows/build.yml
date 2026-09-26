@@ -28,20 +28,16 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: ${{ matrix.java }}
-      - uses: actions/cache@v4
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
         with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-            ./.gradle/loom-cache
-          key: ${{ runner.os }}-gradle0-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle0-
+          cache-read-only: false
+          cache-cleanup: never
       - name: build
         run: ./gradlew build
       - name: capture build artifacts
         uses: actions/upload-artifact@v4
-        if: ${{ runner.os == 'Linux' && matrix.java == '21' }} # Only upload artifacts built from latest java on one OS
+        if: ${{ runner.os == 'Linux' && matrix.java == '25' }} # Only upload artifacts built from latest java on one OS
         with:
           name: artifacts
           path: |
