@@ -50,7 +50,7 @@ public abstract class MixinSoundManager implements SoundManagerDuck {
 
     @Shadow public abstract void unregisterListener(SoundInstanceListener listener);
 
-    @Shadow public abstract void reloadSounds();
+    @Shadow public abstract void stopAll();
 
     @Inject(method = "<init>", at = @At("RETURN"), remap = false)
     private void onInit(CallbackInfo ci) {
@@ -75,13 +75,19 @@ public abstract class MixinSoundManager implements SoundManagerDuck {
 
     // updateListenerPosition not needed
 
-    // stopAll not needed
+    @Inject(method = "stopAll", at = @At("HEAD"), cancellable = true)
+    private void onStopAll(CallbackInfo ci) {
+        if (rsls$shouldRunOffthread()) {
+            ci.cancel();
+            ((ISoundSystem) this.soundSystem).getTaskQueue().execute(this::stopAll);
+        }
+    }
 
     @Inject(method = "close", at = @At("HEAD"), cancellable = true)
     private void onClose(CallbackInfo ci) {
         if (rsls$shouldRunOffthread()) {
             ci.cancel();
-            ((ISoundSystem) this.soundSystem).getTaskQueue().execute(this::close);
+            ((ISoundSystem) this.soundSystem).getTaskQueue().submitAndJoin(this::close);
         }
     }
 
@@ -125,6 +131,15 @@ public abstract class MixinSoundManager implements SoundManagerDuck {
             ((ISoundSystem) this.soundSystem).getTaskQueue().execute(() -> original.call(id, soundCategory));
         } else {
             original.call(id, soundCategory);
+        }
+    }
+
+    @WrapOperation(method = "apply(Lnet/minecraft/client/sound/SoundManager$SoundList;Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/util/profiler/Profiler;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/sound/SoundSystem;reloadSounds()V"))
+    private void wrapResourceReloadReload(SoundSystem instance, Operation<Void> original) {
+        if (rsls$shouldRunOffthread()) {
+            ((ISoundSystem) this.soundSystem).getTaskQueue().submitAndJoin(() -> original.call(instance));
+        } else {
+            original.call(instance);
         }
     }
 

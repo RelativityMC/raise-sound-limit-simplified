@@ -50,6 +50,10 @@ public class RSLSMixinPlugin implements IMixinConfigPlugin {
             return POST_1_21_5;
         if (mixinClassName.equals("com.ishland.fabric.rsls.mixin.MixinMusicTracker"))
             return POST_1_21_5;
+        if (mixinClassName.equals("com.ishland.fabric.rsls.mixin.versions.MixinSoundSystemPost1_21_8"))
+            return POST_1_21_8;
+        if (mixinClassName.equals("com.ishland.fabric.rsls.mixin.versions.sndmgr.patch_2.MixinSoundManager1_18"))
+            return POST_1_17_1;
         return true;
     }
 
