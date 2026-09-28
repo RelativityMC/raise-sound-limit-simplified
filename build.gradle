@@ -137,7 +137,6 @@ publishMods {
 			accessToken = System.getenv("CURSEFORGE_TOKEN")
 			cfVersions.each { minecraftVersions.add(it.trim()) }
 			client = true
-			server = true
 			changelogType = "markdown"
 			javaVersions.add(JavaVersion.VERSION_25)
 		}
