@@ -41,7 +41,7 @@ dependencies {
 	}
 	forgeUserdev "net.neoforged:neoforge:${project.forge_version}:userdev"
 
-    modCompileOnly "me.shedaniel.cloth:cloth-config-neoforge:26.1.154"
+    modCompileOnly "me.shedaniel.cloth:cloth-config-neoforge:26.3.159"
 
 	testImplementation 'org.junit.jupiter:junit-jupiter:5.13.4'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
