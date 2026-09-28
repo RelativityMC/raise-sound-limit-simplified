@@ -40,7 +40,7 @@ public class ConfigScreenUtils {
     public static ButtonWidget getConfigButton(Screen screen) {
         ButtonWidget widget;
         widget = ButtonWidget.builder(Text.of("RSLS Config"), button -> {
-            MinecraftClient.getInstance().setScreen(makeConfigScreen(screen));
+            MinecraftClient.getInstance().guiManager.setScreen(makeConfigScreen(screen));
         }).dimensions(screen.width - 90, 8, 80, 20).build();
         return widget;
     }
