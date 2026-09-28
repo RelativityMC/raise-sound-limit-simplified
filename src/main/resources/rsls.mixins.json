@@ -27,6 +27,7 @@
     "versions.MixinSoundSystem1_21_5",
     "versions.MixinSoundSystem1_21_6",
     "versions.MixinSoundSystemPost1_21_8",
+    "versions.MixinSoundSystemPre1_21_8",
     "versions.sndmgr.patch_0.MixinSoundManager1_21_5",
     "versions.sndmgr.patch_0.MixinSoundManager1_21_6",
     "versions.sndmgr.patch_1.MixinSoundManager1_21_8",

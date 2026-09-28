@@ -1,5 +1,5 @@
 plugins {
-	id 'dev.architectury.loom' version '1.18-SNAPSHOT'
+	id 'org.relativitymc.neo-loom-remap' version '1.18-SNAPSHOT'
 	id 'maven-publish'
 	id 'me.modmuss50.mod-publish-plugin' version "2.2.1"
 }
@@ -36,7 +36,7 @@ dependencies {
 		it.mappings("net.fabricmc:yarn:$project.yarn_mappings:v2")
 		it.mappings("dev.architectury:yarn-mappings-patch-neoforge:$project.yarn_mappings_patch_neoforge_version")
 	}
-	neoForge "net.neoforged:neoforge:${project.forge_version}"
+	forgeUserdev "net.neoforged:neoforge:${project.forge_version}:userdev"
 
     modCompileOnly "me.shedaniel.cloth:cloth-config-neoforge:21.11.153"
 

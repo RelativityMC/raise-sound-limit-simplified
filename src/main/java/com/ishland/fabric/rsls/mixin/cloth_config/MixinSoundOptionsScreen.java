@@ -21,7 +21,7 @@ public abstract class MixinSoundOptionsScreen extends GameOptionsScreen {
     }
 
     @Dynamic
-    @Inject(method = {"method_25426()V", "addOptions"}, at = @At("RETURN"))
+    @Inject(method = {"addOptions"}, at = @At("RETURN"))
     private void onInit(CallbackInfo ci) {
         final ButtonWidget widget = ConfigScreenUtils.getConfigButton(this);
         if (widget != null)

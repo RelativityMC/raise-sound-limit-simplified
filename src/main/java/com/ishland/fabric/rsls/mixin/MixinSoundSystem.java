@@ -177,10 +177,4 @@ public abstract class MixinSoundSystem implements SoundSystemDuck {
         rsls$pendingTicks.get().add(instance);
     }
 
-    // named "restart" in older versions
-    @Redirect(method = "stopAll", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/sound/SoundExecutor;stop()V"))
-    private void redirectExecutorStop(SoundExecutor instance) {
-        ((IThreadExecutor<Runnable>) this.taskQueue).invokeCancelTasks();
-    }
-
 }
