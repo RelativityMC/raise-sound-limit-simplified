@@ -1,6 +1,8 @@
 package com.ishland.fabric.rsls;
 
 import io.netty.util.internal.PlatformDependent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -15,6 +17,8 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
 public class RSLSInjectorFFM {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(RSLSInjectorFFM.class);
 
     private static final MemorySegment buf;
 
@@ -37,7 +41,7 @@ public class RSLSInjectorFFM {
                         }
                     }));
                     String envDefinition = "ALSOFT_CONF=" + current.relativize(tempFile);
-                    System.out.println(String.format("Attempting to invoke putenv(\"%s\")", envDefinition));
+                    LOGGER.info("Attempting to invoke putenv(\"{}\")", envDefinition);
                     buf = Arena.global().allocateFrom(envDefinition);
 
                     final MemorySegment putenv = Linker.nativeLinker().defaultLookup().findOrThrow(PlatformDependent.isWindows() ? "_putenv" : "putenv");

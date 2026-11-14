@@ -14,6 +14,8 @@ import java.util.Properties;
 
 public class RSLSConfig {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(RSLSConfig.class);
+
     private static final Path CONFIG_FILE = FabricLoader.getInstance().getConfigDir().resolve("rsls.properties");
     public static final int probedMaxSourcesCount;
 
@@ -22,8 +24,7 @@ public class RSLSConfig {
         try {
             count = SourcesLimitProber.probeSourcesLimit();
         } catch (Throwable t) {
-            System.err.println("Failed to probe max sources count, falling back to default value.");
-            t.printStackTrace();
+            LOGGER.error("Failed to probe max sources count, falling back to default value.", t);
             count = RSLSConstants.expectedMaxSourcesCount;
         }
         probedMaxSourcesCount = count;
