@@ -5,6 +5,8 @@ import org.lwjgl.system.APIUtil;
 import org.lwjgl.system.JNI;
 import org.lwjgl.system.MemoryUtil;
 import org.lwjgl.system.SharedLibrary;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -14,6 +16,8 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
 public class RSLSInjectorLWJGL {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(RSLSInjectorLWJGL.class);
 
     private static final String libName;
     private static final ByteBuffer buf;
@@ -45,7 +49,7 @@ public class RSLSInjectorLWJGL {
                         }
                     }));
                     String envDefinition = "ALSOFT_CONF=" + current.relativize(tempFile);
-                    System.out.println(String.format("Attempting to invoke putenv(\"%s\")", envDefinition));
+                    LOGGER.info("Attempting to invoke putenv(\"{}\")", envDefinition);
                     buf = MemoryUtil.memASCII(envDefinition);
                     final long address = MemoryUtil.memAddress(buf);
 
