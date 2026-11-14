@@ -1,7 +1,8 @@
 package com.ishland.fabric.rsls.common;
 
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.util.math.MathHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -48,8 +49,8 @@ public class RSLSConfig {
                 throw new RuntimeException(e);
             }
         }
-        maxSourcesCount = MathHelper.clamp(getInt(properties, "maxSourcesCount", probedMaxSourcesCount), 32, probedMaxSourcesCount);
-        maxStreamingSources = MathHelper.clamp(getInt(properties, "maxStreamingSources", 8), 8, probedMaxSourcesCount);
+        maxSourcesCount = Math.clamp(getInt(properties, "maxSourcesCount", probedMaxSourcesCount), 32, probedMaxSourcesCount);
+        maxStreamingSources = Math.clamp(getInt(properties, "maxStreamingSources", 8), 8, probedMaxSourcesCount);
         saveConfig();
     }
 
