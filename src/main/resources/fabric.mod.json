@@ -18,6 +18,9 @@
   "entrypoints": {
     "client": [
       "com.ishland.fabric.rsls.RSLSMod"
+    ],
+    "preLaunch": [
+      "com.ishland.fabric.rsls.RSLSPreLaunch"
     ]
   },
   "mixins": [
