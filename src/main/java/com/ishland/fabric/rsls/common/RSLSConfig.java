@@ -1,6 +1,7 @@
 package com.ishland.fabric.rsls.common;
 
-import net.minecraft.util.math.MathHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import net.neoforged.fml.loading.FMLPaths;
 
 import java.io.IOException;
@@ -13,6 +14,8 @@ import java.util.Properties;
 
 public class RSLSConfig {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(RSLSConfig.class);
+
     private static final Path CONFIG_FILE = FMLPaths.CONFIGDIR.get().resolve("rsls.properties");
     public static final int probedMaxSourcesCount;
 
@@ -21,8 +24,7 @@ public class RSLSConfig {
         try {
             count = SourcesLimitProber.probeSourcesLimit();
         } catch (Throwable t) {
-            System.err.println("Failed to probe max sources count, falling back to default value.");
-            t.printStackTrace();
+            LOGGER.error("Failed to probe max sources count, falling back to default value.", t);
             count = RSLSConstants.expectedMaxSourcesCount;
         }
         probedMaxSourcesCount = count;
@@ -48,8 +50,8 @@ public class RSLSConfig {
                 throw new RuntimeException(e);
             }
         }
-        maxSourcesCount = MathHelper.clamp(getInt(properties, "maxSourcesCount", probedMaxSourcesCount), 32, probedMaxSourcesCount);
-        maxStreamingSources = MathHelper.clamp(getInt(properties, "maxStreamingSources", 8), 8, probedMaxSourcesCount);
+        maxSourcesCount = Math.clamp(getInt(properties, "maxSourcesCount", probedMaxSourcesCount), 32, probedMaxSourcesCount);
+        maxStreamingSources = Math.clamp(getInt(properties, "maxStreamingSources", 8), 8, probedMaxSourcesCount);
         saveConfig();
     }
 
