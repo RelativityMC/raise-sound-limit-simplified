@@ -41,7 +41,7 @@ public class RSLSMod {
     }
 
     {
-//        RSLSConfig.init();
-//        RSLSInjectorFFM.init();
+        RSLSConfig.init();
+        RSLSInjectorFFM.init();
     }
 }
